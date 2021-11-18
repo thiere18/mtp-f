@@ -27,6 +27,10 @@ def upgrade():
     op.add_column('products', sa.Column('container_id', sa.Integer(), nullable=False))
     op.create_foreign_key('products_container_fk', source_table="products", referent_table="containers", local_cols=[
                           'container_id'], remote_cols=['id'], ondelete="CASCADE")
+    op.add_column('invoices', sa.Column('invoice_owner_id', sa.Integer(), nullable=False))
+    op.create_foreign_key('invoices_user_fk', source_table="invoices", referent_table="users", local_cols=[
+                          'invoice_owner_id'], remote_cols=['id'], ondelete="CASCADE")
+    
     
     pass
 

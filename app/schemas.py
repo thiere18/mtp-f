@@ -55,6 +55,8 @@ class PostOut(BaseModel):
 
     class Config:
         orm_mode = True
+        
+        
 
 
 class UserCreate(BaseModel):
