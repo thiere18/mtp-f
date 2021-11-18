@@ -23,7 +23,7 @@ def upgrade():
                     sa.Column('montant', sa.BigInteger(), nullable=False),
                     sa.Column('created_at', sa.TIMESTAMP(timezone=True),
                               server_default=sa.text('now()'), nullable=False),
-                    sa.Column('deleted', sa.Boolean(), default=False),
+                    sa.Column('deleted', sa.Boolean(), nullable=False,server_default=sa.text('False'),),
                     sa.PrimaryKeyConstraint('id'),
 
                     )

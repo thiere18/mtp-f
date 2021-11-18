@@ -10,6 +10,21 @@ class PostBase(BaseModel):
     content: str
     published: bool = True
 
+class Category(BaseModel):
+    name: str
+    
+
+class CategoryOut(BaseModel):
+    id: int
+    name: str
+    created_at: datetime
+    class Config:
+        orm_mode= True
+    
+class CategoryCreate(Category):
+    pass
+    
+    
 
 class PostCreate(PostBase):
     pass
