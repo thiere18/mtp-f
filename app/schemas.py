@@ -189,8 +189,43 @@ class ProductOut(BaseModel):
         orm_mode = True
     
 class Cont(ContainerOut):
-    # prd:List[ProductOut]
+    products:List[ProductOut]
     class Config:
         orm_mode = True
     
+# invoice schemas
+class InvoiceItem(BaseModel):
+    product_name:str
+    quantity:int
+    prix_unit:int
+class InvoiceItemOut(InvoiceItem):
+    id:int
+    created_at:datetime
+    class Config:
+        orm_mode = True
+    
+class Invoice(BaseModel):
+    reference:str
+    value_net: int
+    actual_payment: int
+    payment_due: int
+    pass
 
+class InvoiceCreate(Invoice):
+    pass
+
+class InvoiceOut(BaseModel):
+    id:int
+    reference:str
+    value_net: int
+    payment_due: int
+    actual_payment: int
+    invoice_owner_id:int
+    created_at: datetime
+    # own:InvoiceItemOut
+    class Config:
+        orm_mode = True
+
+    pass
+class InvoiceDetails(InvoiceOut):
+    items:list[InvoiceItem]

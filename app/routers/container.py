@@ -21,7 +21,7 @@ def get_categories(db: Session = Depends(get_db), current_user: int = Depends(oa
     return  containers
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.ContainerOut)
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.Cont)
 def create_container(post: schemas.ContainerCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
  
     new_container = models.Container(**post.dict())
@@ -30,6 +30,7 @@ def create_container(post: schemas.ContainerCreate, db: Session = Depends(get_db
     db.refresh(new_container)
 
     return new_container
+
 
 
 @router.get("/{id}", response_model=schemas.Cont)
@@ -43,6 +44,8 @@ def get_container(id: int, db: Session = Depends(get_db), current_user: int = De
                             detail=f"container with id: {id} was not found")
 
     return container
+
+
 
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)

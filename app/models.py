@@ -127,7 +127,6 @@ class Invoice(Base):
     user_invoices=relationship("User")
     pass
 
-    
 class InvoiceItem(Base):
     __tablename__ = "invoiceitems"
     id = Column(Integer, primary_key=True, nullable=False)
@@ -139,4 +138,8 @@ class InvoiceItem(Base):
     deleted = Column(Boolean, server_default='False', nullable=False)
     invoice_id = Column(Integer, ForeignKey(
         "invoices.id", ondelete="CASCADE"), nullable=False)
-    my_invoice=relationship("Invoice")
+    own = relationship("Invoice")
+
+
+
+
