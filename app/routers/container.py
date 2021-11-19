@@ -32,7 +32,7 @@ def create_container(post: schemas.ContainerCreate, db: Session = Depends(get_db
     return new_container
 
 
-@router.get("/{id}", response_model=schemas.ContainerOut)
+@router.get("/{id}", response_model=schemas.Cont)
 def get_container(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
   
 

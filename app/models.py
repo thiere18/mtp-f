@@ -60,10 +60,10 @@ class Product(Base):
     container_id = Column(Integer, ForeignKey(
         "containers.id", ondelete="CASCADE"), nullable=False
     )
-    
-    container=relationship("Containers")
     category= relationship("Category")
-    
+    container=relationship("Container")
+
+
     pass
 
 class Category(Base):
@@ -98,7 +98,6 @@ class Container(Base):
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
     deleted = Column(Boolean, server_default='False', nullable=False)
-
     pass
 
 class Magasin(Base):
@@ -140,4 +139,4 @@ class InvoiceItem(Base):
     deleted = Column(Boolean, server_default='False', nullable=False)
     invoice_id = Column(Integer, ForeignKey(
         "invoices.id", ondelete="CASCADE"), nullable=False)
-    my_invoice=relationship("Items")
+    my_invoice=relationship("Invoice")

@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 
 from pydantic.types import conint
 
@@ -156,6 +156,19 @@ class ContainerCreate(Container):
     pass
 
 
+class ContainerOut(BaseModel):
+    id: int
+    reference:str
+    prix_achat:int
+    prix_transport:int
+    frais_dedouanement: int
+    charge_local: int
+    dechargement: int
+    frais_voyage: int
+    created_at: datetime
+    class Config:
+        orm_mode= True
+
 
 class ProductOut(BaseModel):
     id: int
@@ -171,20 +184,13 @@ class ProductOut(BaseModel):
     quantity_left:int
     created_at: datetime
     category:CategoryOut
+    container:ContainerOut
     class Config:
         orm_mode = True
     
-class ContainerOut(BaseModel):
-    id: int
-    reference:str
-    prix_achat:int
-    prix_transport:int
-    frais_dedouanement: int
-    charge_local: int
-    dechargement: int
-    frais_voyage: int
-    created_at: datetime
-    product:ProductOut
+class Cont(ContainerOut):
+    # prd:List[ProductOut]
     class Config:
-        orm_mode= True
+        orm_mode = True
     
+
