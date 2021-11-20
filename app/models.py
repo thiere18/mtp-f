@@ -21,14 +21,6 @@ class Post(Base):
     owner = relationship("User")
 
 
-class User(Base):
-    __tablename__ = "users"
-    id = Column(Integer, primary_key=True, nullable=False)
-    email = Column(String, nullable=False, unique=True)
-    password = Column(String, nullable=False)
-    created_at = Column(TIMESTAMP(timezone=True),
-                        nullable=False, server_default=text('now()'))
-
 
 # class Vote(Base):
 #     __tablename__ = "votes"
@@ -36,6 +28,22 @@ class User(Base):
 #         "users.id", ondelete="CASCADE"), primary_key=True)
 #     post_id = Column(Integer, ForeignKey(
 #         "posts.id", ondelete="CASCADE"), primary_key=True)
+
+class Container(Base):
+    __tablename__ = "containers"
+    id = Column(Integer, primary_key=True, nullable=False)
+    reference = Column(String(255), nullable=False)
+    prix_achat = Column(BigInteger(), nullable=False)
+    prix_transport = Column(BigInteger(), nullable=False)
+    frais_dedouanement = Column(BigInteger(), nullable=False)
+    charge_local = Column(BigInteger(), nullable=False)
+    dechargement = Column(BigInteger(), nullable=False)
+    frais_voyage = Column(BigInteger(), nullable=False)
+    created_at = Column(TIMESTAMP(timezone=True),
+                        nullable=False, server_default=text('now()'))
+    deleted = Column(Boolean, server_default='False', nullable=False)
+    products=relationship("Product",backref='owner')
+    pass
 
 class Product(Base):
     __tablename__ = "products"
@@ -61,7 +69,6 @@ class Product(Base):
         "containers.id", ondelete="CASCADE"), nullable=False
     )
     category= relationship("Category")
-    container=relationship("Container")
 
 
     pass
@@ -85,20 +92,6 @@ class Depot(Base):
 
     pass
 
-class Container(Base):
-    __tablename__ = "containers"
-    id = Column(Integer, primary_key=True, nullable=False)
-    reference = Column(String(255), nullable=False)
-    prix_achat = Column(BigInteger(), nullable=False)
-    prix_transport = Column(BigInteger(), nullable=False)
-    frais_dedouanement = Column(BigInteger(), nullable=False)
-    charge_local = Column(BigInteger(), nullable=False)
-    dechargement = Column(BigInteger(), nullable=False)
-    frais_voyage = Column(BigInteger(), nullable=False)
-    created_at = Column(TIMESTAMP(timezone=True),
-                        nullable=False, server_default=text('now()'))
-    deleted = Column(Boolean, server_default='False', nullable=False)
-    pass
 
 class Magasin(Base):
     __tablename__ = "magasins"
@@ -124,7 +117,7 @@ class Invoice(Base):
     deleted = Column(Boolean, server_default='False', nullable=False)
     invoice_owner_id = Column(Integer, ForeignKey(
         "users.id", ondelete="CASCADE"), nullable=False)
-    user_invoices=relationship("User")
+    items=relationship("InvoiceItem",backref="owner")
     pass
 
 class InvoiceItem(Base):
@@ -138,8 +131,14 @@ class InvoiceItem(Base):
     deleted = Column(Boolean, server_default='False', nullable=False)
     invoice_id = Column(Integer, ForeignKey(
         "invoices.id", ondelete="CASCADE"), nullable=False)
-    own = relationship("Invoice")
+    
 
 
-
-
+class User(Base):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True, nullable=False)
+    email = Column(String, nullable=False, unique=True)
+    password = Column(String, nullable=False)
+    created_at = Column(TIMESTAMP(timezone=True),
+                        nullable=False, server_default=text('now()'))
+    invoices=relationship("Invoice",backref="creator")

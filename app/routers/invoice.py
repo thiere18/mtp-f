@@ -26,7 +26,7 @@ def get_invoices(db: Session = Depends(get_db), current_user: int = Depends(oaut
     return  containers
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED)
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.InvoiceOut)
 async def create_invoice(post: schemas.InvoiceCreate,item:List[schemas.InvoiceItem], db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
  
     new_invoice = models.Invoice(invoice_owner_id=current_user.id, **post.dict())
@@ -36,16 +36,16 @@ async def create_invoice(post: schemas.InvoiceCreate,item:List[schemas.InvoiceIt
     await asyncio.sleep(1)
     new_id=new_invoice.id
     for invoice_item in item:
-        new_invoice = models.InvoiceItem(invoice_id=new_id,**invoice_item.dict())
-        db.add(new_invoice)
+        new_invoice_item = models.InvoiceItem(invoice_id=new_id,**invoice_item.dict())
+        db.add(new_invoice_item)
         db.commit()
-    # add_invoice_item(new_invoice.id,item, db=Depends(get_db))
+    await asyncio.sleep(1)
     
-    return {"msg": "Invoice added successfully"}
+    return new_invoice
 
 
 
-@router.get("/{id}", response_model=schemas.InvoiceOut)
+@router.get("/{id}", response_model=schemas.InvoiceItemOut)
 def get_invoice(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
   
 
@@ -110,4 +110,10 @@ def get_invoice_detail(id: int, db: Session = Depends(get_db), current_user: int
     return items
 
 
+
+# paid invoice
+
+# unpaid invoice
+
+# get invoice by client id
 

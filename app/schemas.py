@@ -154,7 +154,21 @@ class Container(BaseModel):
 
 class ContainerCreate(Container):
     pass
-
+class Product(BaseModel):
+    id: int
+    reference:str
+    designation: str
+    prix_achat:int
+    frais: int
+    prix_revient:int
+    prix_en_gros: int
+    prix_magasin:int
+    quantity_per_carton: int
+    quantity_init: int
+    quantity_left:int
+    created_at: datetime
+    class Config:
+        orm_mode = True
 
 class ContainerOut(BaseModel):
     id: int
@@ -166,6 +180,7 @@ class ContainerOut(BaseModel):
     dechargement: int
     frais_voyage: int
     created_at: datetime
+    products:List[Product]
     class Config:
         orm_mode= True
 
@@ -184,7 +199,7 @@ class ProductOut(BaseModel):
     quantity_left:int
     created_at: datetime
     category:CategoryOut
-    container:ContainerOut
+    # container:ContainerOut
     class Config:
         orm_mode = True
     
@@ -198,8 +213,11 @@ class InvoiceItem(BaseModel):
     product_name:str
     quantity:int
     prix_unit:int
-class InvoiceItemOut(InvoiceItem):
+class InvoiceItemOut(BaseModel):
     id:int
+    product_name:str
+    quantity:int
+    prix_unit:int
     created_at:datetime
     class Config:
         orm_mode = True
@@ -222,10 +240,19 @@ class InvoiceOut(BaseModel):
     actual_payment: int
     invoice_owner_id:int
     created_at: datetime
-    # own:InvoiceItemOut
+    items:List[InvoiceItemOut]
     class Config:
         orm_mode = True
 
     pass
 class InvoiceDetails(InvoiceOut):
     items:list[InvoiceItem]
+    
+    
+class UserInvoices(BaseModel):
+    # id: int
+    email: EmailStr
+    created_at: datetime
+    invoices:list[InvoiceOut]
+    class Config:
+        orm_mode = True
