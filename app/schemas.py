@@ -22,12 +22,6 @@ class PostBase(BaseModel):
 class Depot(BaseModel):
     name: str
 
-class DepotOut(BaseModel):
-    id: int
-    name: str
-    created_at: datetime
-    class Config:
-        orm_mode = True
 
 class DepotCreate(Depot):
     pass
@@ -37,15 +31,38 @@ class Magasin(BaseModel):
     name: str
     montant:int
     
+class Depense(BaseModel):
+    motif: str
+    montant:int
+    magasin_id: int
+
+ 
+class DepenseOut(BaseModel):
+    id: int
+    motif: str
+    montant: int
+    created_at: datetime
+    class Config:
+        orm_mode = True
+        
 class MagasinOut(BaseModel):
     id: int
     name: str
     montant: int
     created_at: datetime
+    depwnses:List[DepenseOut]
     class Config:
         orm_mode = True
     
+
+        
+class Depensecreate(Depense):
+    pass
+
 class MagasinCreate(Magasin):
+    pass
+
+class Depensecreate(Depense):
     pass
 
 # category schemas
@@ -70,13 +87,12 @@ class Product(BaseModel):
     designation: str
     prix_achat:int
     frais: int
-    prix_revient:int
     prix_en_gros: int
     prix_magasin:int
     quantity_per_carton: int
     quantity_init: int
-    quantity_left:int
     category_id: int
+    depot_id: int
     container_id: int
     
     
@@ -92,6 +108,7 @@ class PostCreate(PostBase):
 
 class UserOut(BaseModel):
     id: int
+    username: str
     email: EmailStr
     created_at: datetime
 
@@ -101,6 +118,7 @@ class UserOut(BaseModel):
 
 class Post(PostBase):
     id: int
+    
     created_at: datetime
     owner_id: int
     owner: UserOut
@@ -120,6 +138,7 @@ class PostOut(BaseModel):
 
 
 class UserCreate(BaseModel):
+    username: str
     email: EmailStr
     password: str
 
@@ -179,6 +198,7 @@ class ContainerOut(BaseModel):
     charge_local: int
     dechargement: int
     frais_voyage: int
+    total: int
     created_at: datetime
     products:List[Product]
     class Config:
@@ -198,13 +218,22 @@ class ProductOut(BaseModel):
     quantity_init: int
     quantity_left:int
     created_at: datetime
-    category:CategoryOut
-    # container:ContainerOut
+    category:Category
     class Config:
         orm_mode = True
     
 class Cont(ContainerOut):
     products:List[ProductOut]
+    class Config:
+        orm_mode = True
+        
+    
+class DepotOut(BaseModel):
+    id: int
+    name: str
+    created_at: datetime
+    prods:List[Product]
+    
     class Config:
         orm_mode = True
     
@@ -226,7 +255,6 @@ class Invoice(BaseModel):
     reference:str
     value_net: int
     actual_payment: int
-    payment_due: int
     pass
 
 class InvoiceCreate(Invoice):
@@ -239,6 +267,7 @@ class InvoiceOut(BaseModel):
     payment_due: int
     actual_payment: int
     invoice_owner_id:int
+    paid:bool
     created_at: datetime
     items:List[InvoiceItemOut]
     class Config:
@@ -251,8 +280,11 @@ class InvoiceDetails(InvoiceOut):
     
 class UserInvoices(BaseModel):
     # id: int
+    username:str
     email: EmailStr
     created_at: datetime
     invoices:list[InvoiceOut]
     class Config:
         orm_mode = True
+        
+        

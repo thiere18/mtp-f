@@ -38,3 +38,11 @@ def get_user(id: int, db: Session = Depends(get_db), ):
 
     return user
 
+@router.get('/', response_model=List[schemas.UserInvoices])
+def get_user_all(db: Session = Depends(get_db)):
+    user = db.query(models.User).all()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"User with id:  does not exist")
+
+    return user

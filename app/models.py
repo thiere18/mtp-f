@@ -6,19 +6,19 @@ from sqlalchemy.sql.sqltypes import TIMESTAMP, BigInteger
 from .database import Base
 
 
-class Post(Base):
-    __tablename__ = "posts"
+# class Post(Base):
+#     __tablename__ = "posts"
 
-    id = Column(Integer, primary_key=True, nullable=False)
-    title = Column(String, nullable=False)
-    content = Column(String, nullable=False)
-    published = Column(Boolean, server_default='TRUE', nullable=False)
-    created_at = Column(TIMESTAMP(timezone=True),
-                        nullable=False, server_default=text('now()'))
-    owner_id = Column(Integer, ForeignKey(
-        "users.id", ondelete="CASCADE"), nullable=False)
+#     id = Column(Integer, primary_key=True, nullable=False)
+#     title = Column(String, nullable=False)
+#     content = Column(String, nullable=False)
+#     published = Column(Boolean, server_default='TRUE', nullable=False)
+#     created_at = Column(TIMESTAMP(timezone=True),
+#                         nullable=False, server_default=text('now()'))
+#     owner_id = Column(Integer, ForeignKey(
+#         "users.id", ondelete="CASCADE"), nullable=False)
 
-    owner = relationship("User")
+#     owner = relationship("User")
 
 
 
@@ -39,6 +39,7 @@ class Container(Base):
     charge_local = Column(BigInteger(), nullable=False)
     dechargement = Column(BigInteger(), nullable=False)
     frais_voyage = Column(BigInteger(), nullable=False)
+    total = Column(BigInteger(), nullable=False)
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
     deleted = Column(Boolean, server_default='False', nullable=False)
@@ -61,12 +62,15 @@ class Product(Base):
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
     deleted = Column(Boolean, server_default='False', nullable=False)
-    
+  
     category_id = Column(Integer, ForeignKey(
         "categories.id", ondelete="CASCADE"), nullable=False)
     
     container_id = Column(Integer, ForeignKey(
         "containers.id", ondelete="CASCADE"), nullable=False
+    )
+    depot_id= Column(Integer, ForeignKey(
+         "depots.id", ondelete="CASCADE"),nullable=False
     )
     category= relationship("Category")
 
@@ -89,6 +93,7 @@ class Depot(Base):
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
     deleted = Column(Boolean, server_default='False', nullable=False)
+    prods=relationship("Product",backref="prodep")
 
     pass
 
@@ -101,9 +106,20 @@ class Magasin(Base):
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
     deleted = Column(Boolean, server_default='False', nullable=False)
-
+    depenses=relationship("Depenses",backref="magasin_depense")
     pass
 
+class Depense(Base):
+    __tablename__ = "depenses"
+    id = Column(Integer, primary_key=True, nullable=False)
+    motif = Column(String(255), nullable=False)
+    montant = Column(BigInteger(), nullable=False)
+    created_at = Column(TIMESTAMP(timezone=True),
+                        nullable=False, server_default=text('now()'))
+    deleted = Column(Boolean, server_default='False', nullable=False)
+    magasin_id=Column(Integer, ForeignKey(
+        "magasins.id", ondelete="CASCADE"), nullable=False)
+    pass
 
 class Invoice(Base):
     __tablename__ = "invoices"
@@ -114,7 +130,10 @@ class Invoice(Base):
     payment_due = Column(BigInteger(), nullable=False)
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
+    paid = Column(Boolean, server_default='False', nullable=False)
     deleted = Column(Boolean, server_default='False', nullable=False)
+    magasin_id= Column(Integer, ForeignKey(
+        "magasins.id", ondelete="CASCADE"), nullable=False)
     invoice_owner_id = Column(Integer, ForeignKey(
         "users.id", ondelete="CASCADE"), nullable=False)
     items=relationship("InvoiceItem",backref="owner")
@@ -137,6 +156,7 @@ class InvoiceItem(Base):
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, nullable=False)
+    username = Column(String(255), nullable=False)
     email = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False)
     created_at = Column(TIMESTAMP(timezone=True),

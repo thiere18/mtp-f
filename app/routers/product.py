@@ -24,7 +24,7 @@ def get_products(db: Session = Depends(get_db), current_user: int = Depends(oaut
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.ProductOut)
 def create_product(post: schemas.ProductCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
  
-    new_product = models.Product(**post.dict())
+    new_product = models.Product(quantity_left=post.quantity_init,prix_revient=post.prix_achat+post.frais,**post.dict())
     db.add(new_product)
     db.commit()
     db.refresh(new_product)

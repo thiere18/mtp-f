@@ -15,6 +15,50 @@ router = APIRouter(
 
 # get product of each container
 
+# paid invoice
+@router.get('/paid',response_model=List[schemas.InvoiceOut])
+def get_paid_invoice( db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+    invoice = db.query(models.Invoice).filter(models.Invoice.deleted!=True,models.Invoice.paid!=False).all()
+
+    if not invoice:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"no paid invoice found")
+    return invoice
+    
+# unpaid invoice
+@router.get('/unpaid',response_model=List[schemas.InvoiceOut])
+def get_paid_invoice( db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+    invoice = db.query(models.Invoice).filter(models.Invoice.deleted!=True,models.Invoice.paid!=True).all()
+
+    if not invoice:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"no unpaid invoice found")
+
+    return invoice
+
+#unpaid invoice for a user
+@router.get('/unpaid/{id}',response_model=List[schemas.InvoiceOut])
+def get_paid_invoice_for_specific_user(id: int,db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+    invoice = db.query(models.Invoice).filter(models.Invoice.deleted!=True,models.Invoice.paid!=True,models.Invoice.invoice_owner_id==id).all()
+
+    if not invoice:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"no unpaid invoice found")
+
+    return invoice
+
+    
+# paid invoice for a user
+@router.get('/paid/{id}',response_model=List[schemas.InvoiceOut])
+def get_unpaid_invoice_for_specific_user(id: int,db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+    
+    invoice = db.query(models.Invoice).filter(models.Invoice.deleted!=True,models.Invoice.paid!=True,models.Invoice.invoice_owner_id==id,).all()
+
+    if not invoice:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"no unpaid invoice found")
+
+    return invoice
 @router.get("/container/{id}", response_model=List[schemas.ProductOut])
 def get_container_prod(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
   
@@ -31,6 +75,7 @@ def get_container_prod(id: int, db: Session = Depends(get_db), current_user: int
                             detail=f"this container has no products for now")
 
     return products
+
 
 # get product of each category
 
@@ -50,5 +95,25 @@ def get_category_prod(id: int, db: Session = Depends(get_db), current_user: int 
                             detail=f"this category has no products for now")
     return products
 
+ 
 
 
+
+# paid invoice for a user
+@router.get('/pay/{id}',response_model=schemas.InvoiceOut)
+def mark_as_paid(id: int,db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+    
+    invoice_query = db.query(models.Invoice).filter(models.Invoice.id == id,models.Invoice.deleted!=True)
+
+    invoice = invoice_query.first()
+
+    if invoice == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"invoice with id: {id} does not exist")
+    invoice.paid = True
+    invoice.payment_due=0
+    invoice.actual_payment=invoice.value_net
+    db.commit()
+    db.refresh(invoice)
+
+    return invoice

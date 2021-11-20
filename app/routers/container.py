@@ -24,10 +24,12 @@ def get_categories(db: Session = Depends(get_db), current_user: int = Depends(oa
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.ContainerOut)
 def create_container(post: schemas.ContainerCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
  
-    new_container = models.Container(**post.dict())
+    new_container = models.Container(total=post.frais_dedouanement+post.charge_local+post.dechargement+post.frais_voyage+post.prix_transport+post.prix_achat+post.dechargement,**post.dict())
     db.add(new_container)
     db.commit()
     db.refresh(new_container)
+    # reduce capital
+    
 
     return new_container
 

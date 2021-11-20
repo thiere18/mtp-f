@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from . import models
 from .database import engine
-from .routers import post, user, auth,category,product,depot,magasin,container,inventory,invoice
+from .routers import post, user, auth,category,product,depot,magasin,container,inventory,invoice,depense
 from .config import settings
 
 
@@ -31,6 +31,7 @@ app.include_router(product.router)
 app.include_router(depot.router)
 app.include_router(magasin.router)
 app.include_router(invoice.router)
+app.include_router(depense.router)
 # app.include_router(vote.router)
 
 
