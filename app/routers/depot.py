@@ -9,73 +9,73 @@ from ..database import get_db
 
 
 router = APIRouter(
-    prefix="/categories",
-    tags=['Categories']
+    prefix="/depots",
+    tags=['Depots']
 )
 
 
-@router.get("/", response_model=List[schemas.CategoryOut])
-def get_categories(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: Optional[str] = ""):
+@router.get("/", response_model=List[schemas.DepotOut])
+def get_depots(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: Optional[str] = ""):
 
-    categories=db.query(models.Category).filter(models.Category.deleted!=True).all()
-    return  categories
+    depots=db.query(models.Depot).filter(models.Depot.deleted!=True).all()
+    return  depots
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.CategoryOut)
-def create_categories(post: schemas.CategoryCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.DepotOut)
+def create_depot(post: schemas.DepotCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
  
-    new_category = models.Category(**post.dict())
-    db.add(new_category)
+    new_depot = models.Depot(**post.dict())
+    db.add(new_depot)
     db.commit()
-    db.refresh(new_category)
+    db.refresh(new_depot)
 
-    return new_category
+    return new_depot
 
 
-@router.get("/{id}", response_model=schemas.CategoryOut)
-def get_category(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+@router.get("/{id}", response_model=schemas.DepotOut)
+def get_depot(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
   
 
-    category = db.query(models.Category).filter(models.Category.id == id,models.Category.deleted!=True).first()
+    depot = db.query(models.Depot).filter(models.Depot.id == id,models.Depot.deleted!=True).first()
 
-    if not category:
+    if not depot:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"category with id: {id} was not found")
+                            detail=f"depot with id: {id} was not found")
 
-    return category
+    return depot
 
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_post(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+def delete_depot(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
 
-    post_query = db.query(models.Category).filter(models.Category.id == id,models.Category.deleted!=True)
+    depot_query = db.query(models.Depot).filter(models.Depot.id == id,models.Depot.deleted!=True)
 
-    post = post_query.first()
+    depot = depot_query.first()
 
-    if post == None:
+    if depot == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"post with id: {id} does not exist")
-    post.deleted = True
+                            detail=f"depot with id: {id} does not exist")
+    depot.deleted = True
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@router.put("/{id}", response_model=schemas.CategoryOut)
-def update_post(id: int, updated_post: schemas.CategoryCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+@router.put("/{id}", response_model=schemas.DepotOut)
+def update_depot(id: int, updated_post: schemas.CategoryCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
 
 
 
-    post_query = db.query(models.Category).filter(models.Category.id == id,models.Category.deleted!=True)
+    depot_query = db.query(models.Depot).filter(models.Depot.id == id,models.Depot.deleted!=True)
 
-    post = post_query.first()
+    depot = depot_query.first()
 
-    if post == None:
+    if depot == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"post with id: {id} does not exist")
+                            detail=f"depot with id: {id} does not exist")
 
     
-    post_query.update(updated_post.dict(), synchronize_session=False)
+    depot_query.update(updated_post.dict(), synchronize_session=False)
 
     db.commit()
 
-    return post_query.first()
+    return depot_query.first()
