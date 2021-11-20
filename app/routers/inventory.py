@@ -106,7 +106,7 @@ def mark_as_paid(id: int,db: Session = Depends(get_db), current_user: int = Depe
     invoice_query = db.query(models.Invoice).filter(models.Invoice.id == id,models.Invoice.deleted!=True)
 
     invoice = invoice_query.first()
-
+    due=invoice.payment_due
     if invoice == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"invoice with id: {id} does not exist")
@@ -115,5 +115,11 @@ def mark_as_paid(id: int,db: Session = Depends(get_db), current_user: int = Depe
     invoice.actual_payment=invoice.value_net
     db.commit()
     db.refresh(invoice)
-
+    sub=due
+    up=db.query(models.Magasin).filter(models.Magasin.gerant_id==current_user.id).first()
+    if not up:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Problem")
+    up.montant+=sub
+    db.commit()
+    
     return invoice

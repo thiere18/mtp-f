@@ -49,7 +49,13 @@ async def create_invoice(post: schemas.InvoiceCreate,item:List[schemas.InvoiceIt
         db.add(new_invoice_item)
         db.commit()
     await asyncio.sleep(1)
-    
+    # update capital 
+    sub=new_invoice.actual_payment
+    up=db.query(models.Magasin).filter(models.Magasin.gerant_id==current_user.id).first()
+    if not up:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Problem")
+    up.montant+=sub
+    db.commit()
     return new_invoice
 
 

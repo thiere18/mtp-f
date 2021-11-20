@@ -255,6 +255,7 @@ class Invoice(BaseModel):
     reference:str
     value_net: int
     actual_payment: int
+    magasin_id:int
     pass
 
 class InvoiceCreate(Invoice):

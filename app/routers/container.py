@@ -28,6 +28,14 @@ def create_container(post: schemas.ContainerCreate, db: Session = Depends(get_db
     db.add(new_container)
     db.commit()
     db.refresh(new_container)
+    t=new_container.total
+    #update capital to
+    up=db.query(models.Magasin).filter(models.Magasin.gerant_id==current_user.id).first()
+    if not up:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Problem")
+    up.montant-=t
+    db.commit()
+    
     # reduce capital
     
 
