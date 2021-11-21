@@ -9,7 +9,15 @@ from .config import settings
 
 # models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+app = FastAPI(
+    docs_url="/api/v1/docs",
+    redoc_url="/api/v1/redoc",
+    title="MTP API",
+    description="MTP API documentation ",
+    version="2.0",
+    openapi_url="/api/v1/openapi.json"
+    
+)
 
 origins = ["*"]
 
@@ -37,4 +45,8 @@ app.include_router(depense.router)
 
 @app.get("/")
 def root():
-    return {"message": "Hello World pushing out to ubuntu"}
+    return {"message": "Hello World pushing out to heroku",
+            "openapiapi documentation url":"/api/v1/docs",
+            "redoc documentationurl ": "/api/v1/redoc"
+            
+            }

@@ -9,7 +9,7 @@ from ..database import get_db
 
 
 router = APIRouter(
-    prefix="/categories",
+    prefix="/api/v1/categories",
     tags=['Categories']
 )
 
