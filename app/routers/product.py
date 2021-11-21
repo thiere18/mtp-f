@@ -61,7 +61,7 @@ def delete_product(id: int, db: Session = Depends(get_db), current_user: int = D
 
 
 @router.put("/{id}", response_model=schemas.ProductOut)
-def update_product(id: int, updated_post: schemas.CategoryCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+def update_product(id: int, updated_post: schemas.ProductCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
 
 
 

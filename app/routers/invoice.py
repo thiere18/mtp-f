@@ -74,7 +74,7 @@ def get_invoice(id: int, db: Session = Depends(get_db), current_user: int = Depe
 
 
 @router.put("/{id}", response_model=schemas.InvoiceOut)
-def update_invoice(id: int, updated_post: schemas.CategoryCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+def update_invoice(id: int, updated_post: schemas.ProductCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
 
 
 
