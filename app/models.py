@@ -93,7 +93,7 @@ class Magasin(Base):
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
     deleted = Column(Boolean, server_default='False', nullable=False)
-    depenses=relationship("Depenses",backref="magasin_depense")
+    depenses=relationship("Depense",backref="magasin_depense")
     pass
 
 class Depense(Base):
