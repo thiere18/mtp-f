@@ -29,7 +29,7 @@ MarkupSafe==2.0.1
 orjson==3.6.4
 passlib==1.7.4
 promise==2.3
-psycopg2-binary==2.9.2
+psycopg2==2.9.2
 pyasn1==0.4.8
 pycodestyle==2.7.0
 pycparser==2.20

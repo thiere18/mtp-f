@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from . import models
 from .database import engine
-from .routers import post, user, auth,category,product,depot,magasin,container,inventory,invoice,depense
+from .routers import user, auth,category,product,depot,magasin,container,inventory,invoice,depense
 from .config import settings
 
 
