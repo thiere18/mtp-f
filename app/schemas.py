@@ -50,7 +50,7 @@ class MagasinOut(BaseModel):
     name: str
     montant: int
     created_at: datetime
-    depwnses:List[DepenseOut]
+    depenses:List[DepenseOut]
     class Config:
         orm_mode = True
     
@@ -232,7 +232,7 @@ class DepotOut(BaseModel):
     id: int
     name: str
     created_at: datetime
-    prods:List[Product]
+    products:List[Product]
     
     class Config:
         orm_mode = True

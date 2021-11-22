@@ -80,7 +80,7 @@ class Depot(Base):
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
     deleted = Column(Boolean, server_default='False', nullable=False)
-    prods=relationship("Product",backref="prodep")
+    products=relationship("Product",backref="prodep")
 
     pass
 
