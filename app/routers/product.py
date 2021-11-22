@@ -18,9 +18,15 @@ router = APIRouter(
 
 
 @router.get("/", response_model=List[schemas.ProductOut])
-def get_products(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: Optional[str] = ""):
+def get_products(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, ):
 
     product=db.query(models.Product).filter(models.Product.deleted!=True).all()
+    return  product
+
+@router.get("/", response_model=List[schemas.ProductOut])
+def get_products(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: str= ""):
+
+    product=db.query(models.Product).filter(models.Product.deleted!=True,models.Product.designation.contains(search)).all()
     return  product
 
 

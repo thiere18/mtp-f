@@ -25,6 +25,12 @@ def get_invoices(db: Session = Depends(get_db), current_user: int = Depends(oaut
     containers=db.query(models.Invoice).filter(models.Invoice.deleted!=True).all()
     return  containers
 
+@router.get("/", response_model=List[schemas.InvoiceOut])
+def get_invoices(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: Optional[str] = ""):
+
+    containers=db.query(models.Invoice).filter(models.Invoice.deleted!=True,models.Invoice.reference.contains(search)).all()
+    return  containers
+
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.InvoiceOut)
 async def create_invoice(post: schemas.InvoiceCreate,item:List[schemas.InvoiceItem], db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):

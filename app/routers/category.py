@@ -15,11 +15,18 @@ router = APIRouter(
 
 
 @router.get("/", response_model=List[schemas.CategoryOut])
-def get_categories(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: Optional[str] = ""):
-
-    categories=db.query(models.Category).filter(models.Category.deleted!=True).all()
+def get_categories(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0):
+    categories=db.query(models.Category).filter(models.Category.deleted!=True).all()  
+    if not categories:
+        raise HTTPException(status_code=status.HTTP_204_NO_CONTENT,detail=f"No categories")
     return  categories
 
+@router.get("/search", response_model=List[schemas.CategoryOut])
+def get_categories(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: str = ""):
+    categories=db.query(models.Category).filter(models.Category.deleted!=True,models.Category.name.contains(search)).all()  
+    if not categories:
+        raise HTTPException(status_code=status.HTTP_204_NO_CONTENT,detail=f"No categories")
+    return  categories
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.CategoryOut)
 def create_categories(post: schemas.CategoryCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):

@@ -13,13 +13,17 @@ router = APIRouter(
     tags=['Containers']
 )
 
-
 @router.get("/", response_model=List[schemas.ContainerOut])
-def get_categories(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: Optional[str] = ""):
+def get_categories(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0):
 
     containers=db.query(models.Container).filter(models.Container.deleted!=True).all()
     return  containers
 
+@router.get("/search", response_model=List[schemas.ContainerOut])
+def get_categories(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: str=" "):
+
+    containers=db.query(models.Container).filter(models.Container.deleted!=True,models.Container.reference.contains(search)).all()
+    return  containers
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.ContainerOut)
 def create_container(post: schemas.ContainerCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
