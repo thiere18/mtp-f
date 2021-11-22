@@ -1,17 +1,20 @@
 from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 from typing import List, Optional
-
+from enum import Enum
 from sqlalchemy import func
 # from sqlalchemy.sql.functions import func
 from .. import models, schemas, oauth2
 from ..database import get_db
 
-
+from enum import Enum
 router = APIRouter(
     prefix="/api/v1/products",
     tags=['Products']
 )
+
+
+
 
 
 @router.get("/", response_model=List[schemas.ProductOut])
