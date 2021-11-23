@@ -20,10 +20,8 @@ class Depense(BaseModel):
 class Depensecreate(Depense):
     pass
 
-class DepenseOut(BaseModel):
+class DepenseOut(Depense):
     id: int
-    motif: str
-    montant: int
     created_at: datetime
     class Config:
         orm_mode = True
@@ -37,10 +35,8 @@ class Magasin(BaseModel):
 class MagasinCreate(Magasin):
     pass
   
-class MagasinOut(BaseModel):
+class MagasinOut(Magasin):
     id: int
-    name: str
-    montant: int
     created_at: datetime
     depenses:List[DepenseOut]
     class Config:
@@ -50,9 +46,8 @@ class MagasinOut(BaseModel):
 class Category(BaseModel):
     name: str
 
-class CategoryOut(BaseModel):
+class CategoryOut(Category):
     id: int
-    name: str
     created_at: datetime
     class Config:
         orm_mode= True
@@ -178,9 +173,8 @@ class ContainerOut(BaseModel):
     class Config:
         orm_mode= True
 
-class DepotOut(BaseModel):
+class DepotOut(Depot):
     id: int
-    name: str
     created_at: datetime
     products:List[Product]
     
@@ -239,3 +233,26 @@ class UserInvoices(BaseModel):
         orm_mode = True
         
         
+# fournisseur schemas
+
+# client schemas
+
+# dettes schemas
+
+class Dettes(BaseModel):
+    reference :str
+    total_amount:int
+    avance_amount: int
+    payment_due: int
+    start_date: datetime
+    end_date: datetime
+    
+class DetteCreate(Dettes):
+    pass
+
+    
+class DetteOut(Dettes):
+    id: int
+    created_at: datetime
+    class Config:
+        orm_mode = True   

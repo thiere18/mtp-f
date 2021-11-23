@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey,Enum
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey,Date
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.expression import text
 from sqlalchemy.sql.sqltypes import TIMESTAMP, BigInteger
@@ -137,3 +137,26 @@ class User(Base):
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
     invoices=relationship("Invoice",backref="creator")
+
+class Dette(Base):
+    __tablename__="dettes"
+    id = Column(Integer, primary_key=True, nullable=False)
+    reference = Column(String(255), nullable=False)
+    total_amount = Column(BigInteger(), nullable=False)
+    avance_amount = Column(BigInteger(), nullable=False)
+    payment_due = Column(BigInteger(), nullable=False)
+    start_date = Column(Date(), nullable=False)
+    end_date = Column(Date(), nullable=False)
+    created_at = Column(TIMESTAMP(timezone=True),
+                        nullable=False, server_default=text('now()'))
+    deleted = Column(Boolean, server_default='False', nullable=False)
+ 
+ 
+class Client(Base):
+     __tablename__ = "clients"
+     id = Column(Integer, primary_key=True, nullable=False)
+     name = Column(String(255), nullable=False)
+     phone = Column(String(255), nullable=False)
+     created_at = Column(TIMESTAMP(timezone=True),
+                        nullable=False, server_default=text('now()'))
+     deleted = Column(Boolean, server_default='False', nullable=False)
