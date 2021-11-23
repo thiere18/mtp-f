@@ -150,6 +150,8 @@ class Dette(Base):
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
     deleted = Column(Boolean, server_default='False', nullable=False)
+    dette_owner_id = Column(Integer, ForeignKey(
+        "clients.id", ondelete="CASCADE"), nullable=False)
  
  
 class Client(Base):
@@ -160,3 +162,4 @@ class Client(Base):
      created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
      deleted = Column(Boolean, server_default='False', nullable=False)
+     dettes=relationship("Dette",backref="owner")

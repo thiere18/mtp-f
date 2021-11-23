@@ -235,11 +235,10 @@ class UserInvoices(BaseModel):
         
 # fournisseur schemas
 
-# client schemas
 
 # dettes schemas
 
-class Dettes(BaseModel):
+class Dette(BaseModel):
     reference :str
     total_amount:int
     avance_amount: int
@@ -247,12 +246,30 @@ class Dettes(BaseModel):
     start_date: datetime
     end_date: datetime
     
-class DetteCreate(Dettes):
+class DetteCreate(Dette):
     pass
 
     
-class DetteOut(Dettes):
+class DetteOut(Dette):
     id: int
     created_at: datetime
+    dette_owner_id:int
     class Config:
         orm_mode = True   
+        
+# client SQLALCHEMY_DATABASE_URL
+
+class Client(BaseModel):
+    name: str
+    phone: int
+
+class ClientCreate(Client):
+    pass
+
+class ClientOut(Client):
+    created_at: datetime
+    dettes:List[DetteOut]
+    class Config:
+        orm_mode = True
+        
+    
