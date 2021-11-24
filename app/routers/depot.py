@@ -15,11 +15,16 @@ router = APIRouter(
 
 
 @router.get("/", response_model=List[schemas.DepotOut])
-def get_depots(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: Optional[str] = ""):
+def get_depots(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0):
 
     depots=db.query(models.Depot).filter(models.Depot.deleted!=True).all()
     return  depots
 
+@router.get("/search", response_model=List[schemas.DepotOut])
+def get_depots(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: str = ""):
+
+    depots=db.query(models.Depot).filter(models.Depot.deleted!=True,models.Depot.name.contains(search)).all()
+    return  depots
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.DepotOut)
 def create_depot(post: schemas.DepotCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):

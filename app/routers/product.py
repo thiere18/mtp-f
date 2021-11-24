@@ -1,23 +1,32 @@
 from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 from typing import List, Optional
-
+from enum import Enum
 from sqlalchemy import func
 # from sqlalchemy.sql.functions import func
 from .. import models, schemas, oauth2
 from ..database import get_db
 
-
+from enum import Enum
 router = APIRouter(
     prefix="/api/v1/products",
     tags=['Products']
 )
 
 
+
+
+
 @router.get("/", response_model=List[schemas.ProductOut])
-def get_products(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: Optional[str] = ""):
+def get_products(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, ):
 
     product=db.query(models.Product).filter(models.Product.deleted!=True).all()
+    return  product
+
+@router.get("/", response_model=List[schemas.ProductOut])
+def get_products(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: str= ""):
+
+    product=db.query(models.Product).filter(models.Product.deleted!=True,models.Product.designation.contains(search)).all()
     return  product
 
 

@@ -13,13 +13,17 @@ router = APIRouter(
     tags=['Containers']
 )
 
-
 @router.get("/", response_model=List[schemas.ContainerOut])
-def get_categories(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: Optional[str] = ""):
+def get_categories(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0):
 
     containers=db.query(models.Container).filter(models.Container.deleted!=True).all()
     return  containers
 
+@router.get("/search", response_model=List[schemas.ContainerOut])
+def get_categories(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: str=" "):
+
+    containers=db.query(models.Container).filter(models.Container.deleted!=True,models.Container.reference.contains(search)).all()
+    return  containers
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.ContainerOut)
 def create_container(post: schemas.ContainerCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
@@ -41,7 +45,18 @@ def create_container(post: schemas.ContainerCreate, db: Session = Depends(get_db
 
     return new_container
 
-
+# adding hole container products
+@router.post('/container-products/{id}',response_model=schemas.ContainerOut)
+async def add_contaner_products(id:int,prods:List[schemas.ProductCont] , db:Session = Depends(get_db)):
+    get_container=db.query(models.Container).filter(models.Container.id==id,models.Container.deleted!=True).first()
+    if not get_container:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"Container with id {id} not found")
+    for prod in prods:
+        new_prod = models.Product(container_id=id,quantity_left=prod.quantity_init,prix_revient=prod.prix_achat+prod.frais,**prod.dict())
+        db.add(new_prod)
+        db.commit()
+    
+    return get_container
 
 @router.get("/{id}", response_model=schemas.ContainerOut)
 def get_container(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
