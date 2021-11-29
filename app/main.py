@@ -44,7 +44,7 @@ app.include_router(dette.router)
 
 @app.get("/")
 def root():
-    return {"message": "Hello World pushing out to heroku",
+    return {"message": "Hello World",
             "openapiapi documentation url":"/api/v1/docs",
             "redoc documentationurl ": "/api/v1/redoc"
             

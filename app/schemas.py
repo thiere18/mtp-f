@@ -141,6 +141,7 @@ class UserOut(BaseModel):
     username: str
     email: EmailStr
     created_at: datetime
+
     class Config:
         orm_mode = True  
 
