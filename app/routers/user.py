@@ -48,14 +48,14 @@ def get_user_all(db: Session = Depends(get_db)):
     return user
 
 
-router.put('edit/password')
+@router.put('/edit/password')
 def change_password( mode:schemas.UpdatePassword,db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
-    user = db.query(models.User).filter(models.User.id == current_user.id,models.User.deleted!=True).first()
+    user = db.query(models.User).filter(models.User.id == current_user.id).first()
 
-    if not utils.verify(current_user.password, mode.actual_password):
+    if not utils.verify( mode.actual_password, current_user.password):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail=f"Password does not match")
-    hashed_password = utils.hash(mode.new_passord)
-    user.password = hashed_password
+    hashed_pass = utils.hashpass(mode.new_password)
+    user.password = hashed_pass
     db.commit()
     return {"msg":"Password changed successfully"}

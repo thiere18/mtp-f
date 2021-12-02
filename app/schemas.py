@@ -276,5 +276,5 @@ class ClientOut(Client):
 
 class UpdatePassword(BaseModel):
     actual_password: str
-    new_passord: str
+    new_password: str
     
