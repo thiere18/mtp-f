@@ -56,33 +56,4 @@ def authorized_client(client,token):
     return client
     
 
-
-    # def create_product_model(product):
-    #     return models.I(**product)
-    # product_map=map(create_product_model,invoice)
-    # prods=list(product_map)
-    # for x in prods:
-    #     print(x)
-    # session.add_all(prods)
-    # session.commit()
-    # inv=json.dumps(invoice)
-    # for inb  in invoice:
-    #     print(inb)
-        # new_invoice = models.Invoice(invoice_owner_id=test_user['id'],payment_due=(inv['value_net']-inv['actual_payment']), **inv)
-        # session.add(new_invoice)
-        # session.commit()
-        # session.refresh(new_invoice)
-    
-        # new_id=new_invoice.id
-        # for invoice_item in inv['items']:
-        #     prod=invoice_item['product_name']
-        #     quant=invoice_item['quantity']
-        #     #verify if this product exist
-        #     p= session.query(models.Product).filter(models.Product.product_name==prod).first()
-        #     p.quantity_left-=quant
-        #     session.commit()
-        #     new_invoice_item = models.InvoiceItem(invoice_id=new_id,**invoice_item.dict())
-        #     session.add(new_invoice_item)
-        #     session.commit()
-    
     

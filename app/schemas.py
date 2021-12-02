@@ -273,4 +273,8 @@ class ClientOut(Client):
     class Config:
         orm_mode = True
         
+
+class UpdatePassword(BaseModel):
+    actual_password: str
+    new_passord: str
     
