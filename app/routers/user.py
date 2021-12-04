@@ -48,7 +48,7 @@ def get_user_all(db: Session = Depends(get_db)):
     return user
 
 
-@router.put('/edit/password')
+@router.put('/edit')
 def change_password( mode:schemas.UpdatePassword,db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
     user = db.query(models.User).filter(models.User.id == current_user.id).first()
 
