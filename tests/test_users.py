@@ -45,13 +45,15 @@ def test_correct_incorrect_user_reset(test_user,authorized_client,actual_passwor
         'actual_password':actual_password,
         'new_password':new_password
         }
-    res=authorized_client.put(f"/api/v1/users/edit", json=data)
+    res=authorized_client.put(f"{base_api}/users/edit", json=data)
     assert res.status_code ==status_code
     pass
  
 def test_unauthenticated_user_reset(client):
-        data= {
+    data= {
         'actual_password':'howwwe',
         'new_password':'new_password'
         }
-        
+    res=client.put(f"{base_api}/users/edit", json=data)
+    assert res.status_code ==401
+    assert res.json().get('detail')=='Not authenticated'
