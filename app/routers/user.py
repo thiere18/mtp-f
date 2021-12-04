@@ -1,7 +1,7 @@
 from typing import List
 from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
-from .. import models, schemas, utils
+from .. import models, schemas, utils,oauth2
 from ..database import get_db
 
 router = APIRouter(
@@ -46,3 +46,16 @@ def get_user_all(db: Session = Depends(get_db)):
                             detail=f"User with id:  does not exist")
 
     return user
+
+
+@router.put('/edit')
+def change_password( mode:schemas.UpdatePassword,db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+    user = db.query(models.User).filter(models.User.id == current_user.id).first()
+
+    if not utils.verify( mode.actual_password, current_user.password):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail=f"Password does not match")
+    hashed_pass = utils.hashpass(mode.new_password)
+    user.password = hashed_pass
+    db.commit()
+    return {"msg":"Password changed successfully"}

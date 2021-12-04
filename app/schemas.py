@@ -141,6 +141,7 @@ class UserOut(BaseModel):
     username: str
     email: EmailStr
     created_at: datetime
+
     class Config:
         orm_mode = True  
 
@@ -272,4 +273,8 @@ class ClientOut(Client):
     class Config:
         orm_mode = True
         
+
+class UpdatePassword(BaseModel):
+    actual_password: str
+    new_password: str
     
