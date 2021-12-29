@@ -102,7 +102,7 @@ class ProductOut(BaseModel):
     quantity_init: int
     quantity_left:int
     created_at: datetime
-    category:Category
+    category:CategoryOut
     class Config:
         orm_mode = True
     
