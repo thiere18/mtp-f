@@ -68,6 +68,7 @@ class Depot(Base):
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
     deleted = Column(Boolean, server_default='False', nullable=False)
+    
     products=relationship("Product",backref="prodep")
 
     pass
@@ -81,6 +82,7 @@ class Magasin(Base):
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
     deleted = Column(Boolean, server_default='False', nullable=False)
+    gerant_id= Column(Integer, ForeignKey("users.id", ondelete="CASCADE"),nullable=False)
     depenses=relationship("Depense",backref="magasin_depense")
     pass
 

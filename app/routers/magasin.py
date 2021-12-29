@@ -15,16 +15,18 @@ router = APIRouter(
 
 
 @router.get("/", response_model=List[schemas.MagasinOut])
-def get_magasins(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: Optional[str] = ""):
+def get_magasins(response: Response,db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), ):
+    magsins=db.query(models.Magasin).filter(models.Magasin.deleted!=True).all()
+    response.headers["Content-Range"] = f"0-9/{len(magsins)}"
+    response.headers['X-Total-Count'] = '30' 
+    response.headers['Access-Control-Expose-Headers'] = 'Content-Range'
 
-    magasin=db.query(models.Magasin).filter(models.Magasin.deleted!=True).all()
-    return  magasin
-
+    return 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.MagasinOut)
 def create_magasin(post: schemas.MagasinCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
  
-    new_magasin = models.Magasin(**post.dict())
+    new_magasin = models.Magasin(gerant_id=current_user.id, **post.dict())
     db.add(new_magasin)
     db.commit()
     db.refresh(new_magasin)
@@ -52,7 +54,7 @@ def delete_magasin(id: int, db: Session = Depends(get_db), current_user: int = D
 
     magasin = magasin_query.first()
 
-    if magasin == None:
+    if magasin is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"magasin with id: {id} does not exist")
     magasin.deleted = True
@@ -69,7 +71,7 @@ def update_magasin(id: int, updated_post: schemas.CategoryCreate, db: Session = 
 
     magasin = magasin_query.first()
 
-    if magasin == None:
+    if magasin is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"magasin with id: {id} does not exist")
 

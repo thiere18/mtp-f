@@ -14,16 +14,26 @@ router = APIRouter(
 )
 
 @router.get("/", response_model=List[schemas.ContainerOut])
-def get_categories(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0):
+def get_categories(response: Response,db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), ):
 
     containers=db.query(models.Container).filter(models.Container.deleted!=True).all()
+    response.headers["Content-Range"] = f"0-9/{len(containers)}"
+    response.headers['X-Total-Count'] = '30' 
+    response.headers['Access-Control-Expose-Headers'] = 'Content-Range'
+
     return  containers
 
 @router.get("/search", response_model=List[schemas.ContainerOut])
-def get_categories(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: str=" "):
+def get_categories(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), search: str=" "):
 
-    containers=db.query(models.Container).filter(models.Container.deleted!=True,models.Container.reference.contains(search)).all()
-    return  containers
+    return (
+        db.query(models.Container)
+        .filter(
+            models.Container.deleted != True,
+            models.Container.reference.contains(search),
+        )
+        .all()
+    )
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.ContainerOut)
 def create_container(post: schemas.ContainerCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
@@ -80,7 +90,7 @@ def delete_container(id: int, db: Session = Depends(get_db), current_user: int =
 
     container = container_query.first()
 
-    if container == None:
+    if container is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"container with id: {id} does not exist")
     container.deleted = True
@@ -97,11 +107,11 @@ def update_container(id: int, updated_post: schemas.CategoryCreate, db: Session 
 
     container = container_query.first()
 
-    if container == None:
+    if container is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"container with id: {id} does not exist")
 
-    
+
     container_query.update(updated_post.dict(), synchronize_session=False)
 
     db.commit()
