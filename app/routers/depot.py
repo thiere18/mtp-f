@@ -15,16 +15,25 @@ router = APIRouter(
 
 
 @router.get("/", response_model=List[schemas.DepotOut])
-def get_depots(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0):
+def get_depots(response: Response,db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
 
     depots=db.query(models.Depot).filter(models.Depot.deleted!=True).all()
+    response.headers["Content-Range"] = f"0-9/{len(depots)}"
+    response.headers['X-Total-Count'] = '30' 
+    response.headers['Access-Control-Expose-Headers'] = 'Content-Range'
+
     return  depots
 
 @router.get("/search", response_model=List[schemas.DepotOut])
-def get_depots(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: str = ""):
+def get_depots(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), search: str = ""):
 
-    depots=db.query(models.Depot).filter(models.Depot.deleted!=True,models.Depot.name.contains(search)).all()
-    return  depots
+    return (
+        db.query(models.Depot)
+        .filter(
+            models.Depot.deleted != True, models.Depot.name.contains(search)
+        )
+        .all()
+    )
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.DepotOut)
 def create_depot(post: schemas.DepotCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
@@ -57,7 +66,7 @@ def delete_depot(id: int, db: Session = Depends(get_db), current_user: int = Dep
 
     depot = depot_query.first()
 
-    if depot == None:
+    if depot is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"depot with id: {id} does not exist")
     depot.deleted = True
