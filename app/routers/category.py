@@ -15,17 +15,26 @@ router = APIRouter(
 
 
 @router.get("/", response_model=List[schemas.CategoryOut])
-def get_categories(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0):
-    categories=db.query(models.Category).filter(models.Category.deleted!=True).all()  
+def get_categories(response:Response,db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0):
+    categories=db.query(models.Category).filter(models.Category.deleted!=True).all()
     if not categories:
-        raise HTTPException(status_code=status.HTTP_204_NO_CONTENT,detail=f"No categories")
+        raise HTTPException(
+            status_code=status.HTTP_204_NO_CONTENT, detail='No categories'
+        )
+    response.headers["Content-Range"] = f"0-9/{len(categories)}"
+    response.headers['X-Total-Count'] = '30' 
+    response.headers['Access-Control-Expose-Headers'] = 'Content-Range'
+
     return  categories
 
 @router.get("/search", response_model=List[schemas.CategoryOut])
 def get_categories(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: str = ""):
-    categories=db.query(models.Category).filter(models.Category.deleted!=True,models.Category.name.contains(search)).all()  
+    categories=db.query(models.Category).filter(models.Category.deleted!=True,models.Category.name.contains(search)).all()
     if not categories:
-        raise HTTPException(status_code=status.HTTP_204_NO_CONTENT,detail=f"No categories")
+        raise HTTPException(
+            status_code=status.HTTP_204_NO_CONTENT, detail='No categories'
+        )
+
     return  categories
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.CategoryOut)
@@ -59,7 +68,7 @@ def delete_post(id: int, db: Session = Depends(get_db), current_user: int = Depe
 
     post = post_query.first()
 
-    if post == None:
+    if post is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"post with id: {id} does not exist")
     post.deleted = True
@@ -76,11 +85,11 @@ def update_post(id: int, updated_post: schemas.CategoryCreate, db: Session = Dep
 
     post = post_query.first()
 
-    if post == None:
+    if post is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"post with id: {id} does not exist")
 
-    
+
     post_query.update(updated_post.dict(), synchronize_session=False)
 
     db.commit()

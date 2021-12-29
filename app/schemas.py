@@ -225,7 +225,7 @@ class InvoiceDetails(InvoiceOut):
     
     
 class UserInvoices(BaseModel):
-    # id: int
+    id: int
     username:str
     email: EmailStr
     created_at: datetime

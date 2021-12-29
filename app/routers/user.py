@@ -39,11 +39,17 @@ def get_user(id: int, db: Session = Depends(get_db), ):
     return user
 
 @router.get('/', response_model=List[schemas.UserInvoices])
-def get_user_all(db: Session = Depends(get_db)):
+def get_user_all(response:Response, db: Session = Depends(get_db)):
     user = db.query(models.User).all()
     if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"User with id:  does not exist")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='User with id:  does not exist',
+        )
+    response.headers["Content-Range"] = f"0-9/{len(user)}"
+    response.headers['X-Total-Count'] = '30' 
+    response.headers['Access-Control-Expose-Headers'] = 'Content-Range'
+
 
     return user
 
