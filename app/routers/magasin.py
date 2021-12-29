@@ -16,12 +16,12 @@ router = APIRouter(
 
 @router.get("/", response_model=List[schemas.MagasinOut])
 def get_magasins(response: Response,db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), ):
-    magsins=db.query(models.Magasin).filter(models.Magasin.deleted!=True).all()
-    response.headers["Content-Range"] = f"0-9/{len(magsins)}"
+    magasins=db.query(models.Magasin).filter(models.Magasin.deleted!=True).all()
+    response.headers["Content-Range"] = f"0-9/{len(magasins)}"
     response.headers['X-Total-Count'] = '30' 
     response.headers['Access-Control-Expose-Headers'] = 'Content-Range'
 
-    return 
+    return magasins
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.MagasinOut)
 def create_magasin(post: schemas.MagasinCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
