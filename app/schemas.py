@@ -102,6 +102,9 @@ class ProductOut(BaseModel):
     quantity_init: int
     quantity_left:int
     created_at: datetime
+    category_id: int
+    container_id: int
+    depot_id: int
     category:CategoryOut
     class Config:
         orm_mode = True
