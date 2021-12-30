@@ -15,16 +15,25 @@ router = APIRouter(
 
 
 @router.get("/", response_model=List[schemas.DetteOut])
-def get_dettes(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0):
+def get_dettes(response: Response,db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0):
 
     dettes=db.query(models.Dette).filter(models.Dette.deleted!=True).all()
+    response.headers["Content-Range"] = f"0-9/{len(dettes)}"
+    response.headers['X-Total-Count'] = '30' 
+    response.headers['Access-Control-Expose-Headers'] = 'Content-Range'
     return  dettes
 
 @router.get("/search", response_model=List[schemas.DetteOut])
 def search_dette_by_reference(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: str = ""):
 
-    dettes=db.query(models.Dette).filter(models.Dette.deleted!=True,models.Dette.reference.contains(search)).all()
-    return  dettes
+    return (
+        db.query(models.Dette)
+        .filter(
+            models.Dette.deleted != True,
+            models.Dette.reference.contains(search),
+        )
+        .all()
+    )
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.DetteOut)
 def create_dette(post: schemas.DetteCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
@@ -57,7 +66,7 @@ def delete_dette(id: int, db: Session = Depends(get_db), current_user: int = Dep
 
     dette = dette_query.first()
 
-    if dette == None:
+    if dette is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"dette with id: {id} does not exist")
     dette.deleted = True
@@ -74,7 +83,7 @@ def update_dette(id: int, updated_post: schemas.CategoryCreate, db: Session = De
 
     dette = dette_query.first()
 
-    if dette == None:
+    if dette is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"dette with id: {id} does not exist")
 

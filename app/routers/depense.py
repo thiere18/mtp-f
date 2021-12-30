@@ -15,9 +15,13 @@ router = APIRouter(
 
 
 @router.get("/", response_model=List[schemas.DepenseOut])
-def get_depenses(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0,):
+def get_depenses(response: Response,db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0,):
+    depenses =db.query(models.Depense).filter(models.Depense.deleted!=True).all()
+    response.headers["Content-Range"] = f"0-9/{len(depenses)}"
+    response.headers['X-Total-Count'] = '30' 
+    response.headers['Access-Control-Expose-Headers'] = 'Content-Range'
 
-    return db.query(models.Depense).filter(models.Depense.deleted!=True).all()
+    return depenses
 
 @router.get("/search", response_model=List[schemas.DepenseOut])
 def get_depenses(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: str = ""):

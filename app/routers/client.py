@@ -15,9 +15,13 @@ router = APIRouter(
 
 
 @router.get("/", response_model=List[schemas.ClientOut])
-def get_clientss(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0):
+def get_clientss(response: Response,db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0):
 
     clients=db.query(models.Client).filter(models.Client.deleted!=True).all()
+    response.headers["Content-Range"] = f"0-9/{len(clients)}"
+    response.headers['X-Total-Count'] = '30' 
+    response.headers['Access-Control-Expose-Headers'] = 'Content-Range'
+
     return  clients
 
 @router.get("/search", response_model=List[schemas.ClientOut])

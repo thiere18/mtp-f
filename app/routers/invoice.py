@@ -21,16 +21,26 @@ router = APIRouter(
 #         db.commit()
 
 @router.get("/", response_model=List[schemas.InvoiceOut])
-def get_invoices(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: Optional[str] = ""):
+def get_invoices(response: Response,db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: Optional[str] = ""):
 
-    containers=db.query(models.Invoice).filter(models.Invoice.deleted!=True).all()
-    return  containers
+    invoices=db.query(models.Invoice).filter(models.Invoice.deleted!=True).all()
+    response.headers["Content-Range"] = f"0-9/{len(invoices)}"
+    response.headers['X-Total-Count'] = '30' 
+    response.headers['Access-Control-Expose-Headers'] = 'Content-Range'
+
+    return  invoices
 
 @router.get("/", response_model=List[schemas.InvoiceOut])
 def get_invoices(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: Optional[str] = ""):
 
-    containers=db.query(models.Invoice).filter(models.Invoice.deleted!=True,models.Invoice.reference.contains(search)).all()
-    return  containers
+    return (
+        db.query(models.Invoice)
+        .filter(
+            models.Invoice.deleted != True,
+            models.Invoice.reference.contains(search),
+        )
+        .all()
+    )
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.InvoiceOut)
@@ -106,7 +116,7 @@ def delete_invoice(id: int, db: Session = Depends(get_db), current_user: int = D
 
     invoice = invoice_query.first()
 
-    if invoice == None:
+    if invoice is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"invoice with id: {id} does not exist")
     invoice.deleted = True
