@@ -104,7 +104,9 @@ class ProductOut(BaseModel):
     created_at: datetime
     category_id: int
     container_id: int
-    depot_id: int
+    depot_id:int
+    container_id:int
+    # category:Category
     category:CategoryOut
     class Config:
         orm_mode = True
@@ -119,6 +121,7 @@ class ProductCont(BaseModel):
     quantity_per_carton: int
     quantity_init: int
     category_id: int
+    container_id: int
     depot_id: int
     
 # user schemas      

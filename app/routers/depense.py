@@ -17,14 +17,19 @@ router = APIRouter(
 @router.get("/", response_model=List[schemas.DepenseOut])
 def get_depenses(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0,):
 
-    depenses=db.query(models.Depense).filter(models.Depense.deleted!=True).all()
-    return  depenses
+    return db.query(models.Depense).filter(models.Depense.deleted!=True).all()
 
 @router.get("/search", response_model=List[schemas.DepenseOut])
 def get_depenses(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: str = ""):
 
-    depenses=db.query(models.Depense).filter(models.Depense.deleted!=True,models.Depense.motif.contains(search)).all()
-    return  depenses
+    return (
+        db.query(models.Depense)
+        .filter(
+            models.Depense.deleted != True,
+            models.Depense.motif.contains(search),
+        )
+        .all()
+    )
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.DepenseOut)
@@ -58,7 +63,7 @@ def delete_depot(id: int, db: Session = Depends(get_db), current_user: int = Dep
 
     depense = depense_query.first()
 
-    if depense == None:
+    if depense is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"depense with id: {id} does not exist")
     depense.deleted = True
@@ -75,11 +80,11 @@ def update_depot(id: int, updated_post: schemas.CategoryCreate, db: Session = De
 
     depense = depense_query.first()
 
-    if depense == None:
+    if depense is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"depense with id: {id} does not exist")
 
-    
+
     depense_query.update(updated_post.dict(), synchronize_session=False)
 
     db.commit()

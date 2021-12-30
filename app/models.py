@@ -18,7 +18,7 @@ class Container(Base):
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
     deleted = Column(Boolean, server_default='False', nullable=False)
-    products=relationship("Product",backref='owner')
+    products = relationship("Product", back_populates="container")
     pass
 
 class Product(Base):
@@ -37,20 +37,14 @@ class Product(Base):
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
     deleted = Column(Boolean, server_default='False', nullable=False)
-  
-    category_id = Column(Integer, ForeignKey(
-        "categories.id", ondelete="CASCADE"), nullable=False)
+    category_id = Column(Integer, ForeignKey("categories.id", ondelete="CASCADE"), nullable=False)
     
-    container_id = Column(Integer, ForeignKey(
-        "containers.id", ondelete="CASCADE"), nullable=False
-    )
-    depot_id= Column(Integer, ForeignKey(
-         "depots.id", ondelete="CASCADE"),nullable=False
-    )
-    category= relationship("Category")
+    container_id = Column(Integer, ForeignKey("containers.id", ondelete="CASCADE"), nullable=False)
+    
+    depot_id= Column(Integer, ForeignKey("depots.id", ondelete="CASCADE"),nullable=False)
+    category= relationship("Category", back_populates="products")
+    container = relationship("Container", back_populates="products")
 
-
-    pass
 
 class Category(Base):
     __tablename__ = "categories"
@@ -60,6 +54,7 @@ class Category(Base):
                         nullable=False, server_default=text('now()'))
     deleted = Column(Boolean, server_default='False', nullable=False)
 
+    products= relationship("Product", back_populates="category")
 
 class Depot(Base):
     __tablename__ = "depots"
