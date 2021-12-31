@@ -21,8 +21,11 @@ def get_paid_invoice( db: Session = Depends(get_db), current_user: int = Depends
     invoice = db.query(models.Invoice).filter(models.Invoice.deleted!=True,models.Invoice.paid!=False).all()
 
     if not invoice:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"no paid invoice found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='no paid invoice found',
+        )
+
     return invoice
     
 # unpaid invoice
@@ -31,8 +34,11 @@ def get_paid_invoice( db: Session = Depends(get_db), current_user: int = Depends
     invoice = db.query(models.Invoice).filter(models.Invoice.deleted!=True,models.Invoice.paid!=True).all()
 
     if not invoice:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"no unpaid invoice found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='no unpaid invoice found',
+        )
+
 
     return invoice
 
@@ -42,8 +48,11 @@ def get_paid_invoice_for_specific_user(id: int,db: Session = Depends(get_db), cu
     invoice = db.query(models.Invoice).filter(models.Invoice.deleted!=True,models.Invoice.paid!=True,models.Invoice.invoice_owner_id==id).all()
 
     if not invoice:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"no unpaid invoice found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='no unpaid invoice found',
+        )
+
 
     return invoice
 
@@ -55,24 +64,29 @@ def get_unpaid_invoice_for_specific_user(id: int,db: Session = Depends(get_db), 
     invoice = db.query(models.Invoice).filter(models.Invoice.deleted!=True,models.Invoice.paid!=True,models.Invoice.invoice_owner_id==id,).all()
 
     if not invoice:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"no unpaid invoice found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='no unpaid invoice found',
+        )
+
 
     return invoice
 @router.get("/container/{id}", response_model=List[schemas.ProductOut])
 def get_container_prod(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
-  
 # verify if the container exist
     existence= db.query(models.Category).filter(models.Category.id==id,models.Category.deleted!=True).first()
-    if existence==None:
+    if existence is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"container with id: {id} was not found")
-         
+
     products = db.query(models.Product).filter(models.Product.container_id == id,models.Category.deleted!=True).all()
 
     if not products:
-         raise HTTPException(status_code=status.HTTP_204_NO_CONTENT,
-                            detail=f"this container has no products for now")
+        raise HTTPException(
+            status_code=status.HTTP_204_NO_CONTENT,
+            detail='this container has no products for now',
+        )
+
 
     return products
 
@@ -81,18 +95,20 @@ def get_container_prod(id: int, db: Session = Depends(get_db), current_user: int
 
 @router.get("/category/{id}", response_model=List[schemas.ProductOut])
 def get_category_prod(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
-  
 # verify if the container exist
     existence= db.query(models.Category).filter(models.Category.id==id,models.Category.deleted!=True).first()
-    if existence==None:
+    if existence is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"category with id: {id} was not found")
-         
+
     products = db.query(models.Product).filter(models.Product.category_id == id,models.Category.deleted!=True).all()
 
     if not products:
-         raise HTTPException(status_code=status.HTTP_200_OK,
-                            detail=f"this category has no products for now")
+        raise HTTPException(
+            status_code=status.HTTP_200_OK,
+            detail='this category has no products for now',
+        )
+
     return products
 
  
@@ -107,7 +123,7 @@ def mark_as_paid(id: int,db: Session = Depends(get_db), current_user: int = Depe
 
     invoice = invoice_query.first()
     due=invoice.payment_due
-    if invoice == None:
+    if invoice is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"invoice with id: {id} does not exist")
     invoice.paid = True

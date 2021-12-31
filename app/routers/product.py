@@ -76,7 +76,7 @@ def delete_product(id: int, db: Session = Depends(get_db), current_user: int = D
                             detail=f"product with id: {id} does not exist")
     product.deleted = True
     db.commit()
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return product
 
 
 @router.put("/{id}", response_model=schemas.ProductOut)

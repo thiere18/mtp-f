@@ -45,6 +45,8 @@ def get_invoices(db: Session = Depends(get_db), current_user: int = Depends(oaut
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.InvoiceOut)
 async def create_invoice(post: schemas.InvoiceCreate,item:List[schemas.InvoiceItem], db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+    print(post)
+    print(item)
     new_invoice = models.Invoice(invoice_owner_id=current_user.id,payment_due=(post.value_net-post.actual_payment), **post.dict())
     db.add(new_invoice)
     db.commit()
