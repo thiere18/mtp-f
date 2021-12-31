@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from pydantic.types import conint
 
@@ -189,24 +189,26 @@ class DepotOut(Depot):
         orm_mode = True
     
 # invoice schemas
-class InvoiceItem(BaseModel):
-    product_name:str
-    quantity:int
-    prix_unit:int
-class InvoiceItemOut(BaseModel):
-    id:int
-    product_name:str
-    quantity:int
-    prix_unit:int
-    created_at:datetime
-    class Config:
-        orm_mode = True
+# class InvoiceItem(BaseModel):
+#     product_name:str
+#     quantity:int
+#     prix_unit:int
+# class InvoiceItemOut(BaseModel):
+#     id:int
+#     product_name:str
+#     quantity:int
+#     prix_unit:int
+#     created_at:datetime
+#     class Config:
+#         orm_mode = True
+ 
     
 class Invoice(BaseModel):
     reference:str
     value_net: int
     actual_payment: int
     magasin_id:int
+    items:List[Dict]
     pass
 
 class InvoiceCreate(Invoice):
@@ -221,13 +223,13 @@ class InvoiceOut(BaseModel):
     invoice_owner_id:int
     paid:bool
     created_at: datetime
-    items:List[InvoiceItemOut]
+    items:List[Dict]
     class Config:
         orm_mode = True
 
     pass
 class InvoiceDetails(InvoiceOut):
-    items:List[InvoiceItem]
+    items:List[Dict]
     
     
 class UserInvoices(BaseModel):

@@ -44,9 +44,9 @@ def get_invoices(db: Session = Depends(get_db), current_user: int = Depends(oaut
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.InvoiceOut)
-async def create_invoice(post: schemas.InvoiceCreate,item:List[schemas.InvoiceItem], db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
-    print(post)
-    print(item)
+async def create_invoice(post: schemas.InvoiceCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+
+
     new_invoice = models.Invoice(invoice_owner_id=current_user.id,payment_due=(post.value_net-post.actual_payment), **post.dict())
     db.add(new_invoice)
     db.commit()
@@ -54,26 +54,26 @@ async def create_invoice(post: schemas.InvoiceCreate,item:List[schemas.InvoiceIt
     
     await asyncio.sleep(1)
     new_id=new_invoice.id
-    for invoice_item in item:
-        prod=invoice_item.product_name
-        quant=invoice_item.quantity
-        #verify if this product exist
-        p= db.query(models.Product).filter(models.Product.designation==prod).first()
-        if not p:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST ,detail=f"{prod} is not a product")
-        p.quantity_left-=quant
-        db.commit()
-        new_invoice_item = models.InvoiceItem(invoice_id=new_id,**invoice_item.dict())
-        db.add(new_invoice_item)
-        db.commit()
-    await asyncio.sleep(1)
+    # for invoice_item in item:
+    #     prod=invoice_item.product_name
+    #     quant=invoice_item.quantity
+    #     #verify if this product exist
+    #     p= db.query(models.Product).filter(models.Product.designation==prod).first()
+    #     if not p:
+    #         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST ,detail=f"{prod} is not a product")
+    #     p.quantity_left-=quant
+    #     db.commit()
+    #     new_invoice_item = models.InvoiceItem(invoice_id=new_id,**invoice_item.dict())
+    #     db.add(new_invoice_item)
+    #     db.commit()
+    # await asyncio.sleep(1)
     # update capital 
-    sub=new_invoice.actual_payment
-    up=db.query(models.Magasin).filter(models.Magasin.gerant_id==current_user.id).first()
-    if not up:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Problem")
-    up.montant+=sub
-    db.commit()
+    # sub=new_invoice.actual_payment
+    # up=db.query(models.Magasin).filter(models.Magasin.gerant_id==current_user.id).first()
+    # if not up:
+    #     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Problem")
+    # up.montant+=sub
+    # db.commit()
     return new_invoice
 
 

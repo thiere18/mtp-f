@@ -21,7 +21,6 @@ def upgrade():
     op.create_foreign_key('depot_product_fk', source_table="products", referent_table="depots", local_cols=[
                           'depot_id'], remote_cols=['id'], ondelete="CASCADE")
     
-    pass
 
 
 def downgrade():

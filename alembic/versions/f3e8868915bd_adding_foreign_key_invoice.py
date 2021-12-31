@@ -18,9 +18,6 @@ depends_on = None
 
 def upgrade():
     
-    op.add_column('invoiceitems', sa.Column('invoice_id', sa.Integer(), nullable=False))
-    op.create_foreign_key('invoiceitems_invoice_fk', source_table="invoiceitems", referent_table="invoices", local_cols=[
-                          'invoice_id'], remote_cols=['id'], ondelete="CASCADE")
     op.add_column('products', sa.Column('category_id', sa.Integer(), nullable=False))
     op.create_foreign_key('products_category_fk', source_table="products", referent_table="categories", local_cols=[
                           'category_id'], remote_cols=['id'], ondelete="CASCADE")
@@ -32,7 +29,6 @@ def upgrade():
                           'invoice_owner_id'], remote_cols=['id'], ondelete="CASCADE")
     
     
-    pass
 
 
 def downgrade():

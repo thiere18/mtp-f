@@ -1,9 +1,14 @@
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey,Date
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.expression import text
-from sqlalchemy.sql.sqltypes import TIMESTAMP, BigInteger
+from sqlalchemy.sql.sqltypes import ARRAY, TIMESTAMP, BigInteger
 from .database import Base
+from sqlalchemy.dialects.postgresql import JSON
 
+class Item:
+    designation:str
+    quantity:str
+    product:str
 class Container(Base):
     __tablename__ = "containers"
     id = Column(Integer, primary_key=True, nullable=False)
@@ -53,7 +58,6 @@ class Category(Base):
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
     deleted = Column(Boolean, server_default='False', nullable=False)
-
     products= relationship("Product", back_populates="category")
 
 class Depot(Base):
@@ -103,25 +107,26 @@ class Invoice(Base):
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
     paid = Column(Boolean, server_default='False', nullable=False)
+    items= Column(ARRAY(JSON))
     deleted = Column(Boolean, server_default='False', nullable=False)
     magasin_id= Column(Integer, ForeignKey(
         "magasins.id", ondelete="CASCADE"), nullable=False)
     invoice_owner_id = Column(Integer, ForeignKey(
         "users.id", ondelete="CASCADE"), nullable=False)
-    items=relationship("InvoiceItem",backref="owner")
+    # items=relationship("InvoiceItem",backref="owner")
     pass
 
-class InvoiceItem(Base):
-    __tablename__ = "invoiceitems"
-    id = Column(Integer, primary_key=True, nullable=False)
-    product_name = Column(String(255), nullable=False)
-    quantity= Column(Integer(), nullable=False)
-    prix_unit= Column(BigInteger(), nullable=False)
-    created_at = Column(TIMESTAMP(timezone=True),
-                        nullable=False, server_default=text('now()'))
-    deleted = Column(Boolean, server_default='False', nullable=False)
-    invoice_id = Column(Integer, ForeignKey(
-        "invoices.id", ondelete="CASCADE"), nullable=False)
+# class InvoiceItem(Base):
+#     __tablename__ = "invoiceitems"
+#     id = Column(Integer, primary_key=True, nullable=False)
+#     product_name = Column(String(255), nullable=False)
+#     quantity= Column(Integer(), nullable=False)
+#     prix_unit= Column(BigInteger(), nullable=False)
+#     created_at = Column(TIMESTAMP(timezone=True),
+#                         nullable=False, server_default=text('now()'))
+#     deleted = Column(Boolean, server_default='False', nullable=False)
+#     invoice_id = Column(Integer, ForeignKey(
+#         "invoices.id", ondelete="CASCADE"), nullable=False)
     
 
 

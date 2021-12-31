@@ -23,13 +23,14 @@ def upgrade():
                     sa.Column('value_net', sa.BigInteger(), nullable=False),
                     sa.Column('actual_payment',sa.BigInteger(), nullable=False),
                     sa.Column('payment_due',sa.BigInteger(), nullable=False),
+                    sa.Column('items', sa.ARRAY(sa.JSON), nullable=False),
+
                     sa.Column('created_at', sa.TIMESTAMP(timezone=True),
                               server_default=sa.text('now()'), nullable=False),
                     sa.Column('deleted', sa.Boolean(), nullable=False,server_default=sa.text('False'),),
                     sa.PrimaryKeyConstraint('id'),
 
                     )
-    pass
 
 
 def downgrade():
