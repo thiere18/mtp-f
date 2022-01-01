@@ -54,19 +54,19 @@ def get_client(id: int, db: Session = Depends(get_db), current_user: int = Depen
     return client
 
 
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{id}",response_model_exclude_none=True)
 def delete_depot(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
 
     client_query = db.query(models.Client).filter(models.Client.id == id,models.Client.deleted!=True)
 
     client = client_query.first()
 
-    if client == None:
+    if client is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"client with id: {id} does not exist")
     client.deleted = True
     db.commit()
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return client #Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @router.put("/{id}", response_model=schemas.ClientOut)
@@ -78,7 +78,7 @@ def update_depot(id: int, updated_post: schemas.CategoryCreate, db: Session = De
 
     client = client_query.first()
 
-    if client == None:
+    if client is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"client with id: {id} does not exist")
 

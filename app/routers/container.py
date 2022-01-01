@@ -83,7 +83,7 @@ def get_container(id: int, db: Session = Depends(get_db), current_user: int = De
 
 
 
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{id}", response_model_exclude_none=True)
 def delete_container(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
 
     container_query = db.query(models.Container).filter(models.Container.id == id,models.Container.deleted!=True)
@@ -95,7 +95,7 @@ def delete_container(id: int, db: Session = Depends(get_db), current_user: int =
                             detail=f"container with id: {id} does not exist")
     container.deleted = True
     db.commit()
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return container #Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @router.put("/{id}", response_model=schemas.ContainerOut)

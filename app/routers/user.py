@@ -60,8 +60,26 @@ def change_password( mode:schemas.UpdatePassword,db: Session = Depends(get_db), 
 
     if not utils.verify( mode.actual_password, current_user.password):
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, detail=f"Password does not match")
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='Password does not match',
+        )
+
     hashed_pass = utils.hashpass(mode.new_password)
     user.password = hashed_pass
     db.commit()
     return {"msg":"Password changed successfully"}
+
+
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_product(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+
+    product_query = db.query(models.Product).filter(models.Product.id == id,models.Product.deleted!=True)
+
+    product = product_query.first()
+
+    if product is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"product with id: {id} does not exist")
+    product.deleted = True
+    db.commit()
+    return product

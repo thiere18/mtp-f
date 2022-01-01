@@ -61,7 +61,7 @@ def get_category(id: int, db: Session = Depends(get_db), current_user: int = Dep
     return category
 
 
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{id}",response_model_exclude_none=True)
 def delete_post(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
 
     post_query = db.query(models.Category).filter(models.Category.id == id,models.Category.deleted!=True)
@@ -73,7 +73,7 @@ def delete_post(id: int, db: Session = Depends(get_db), current_user: int = Depe
                             detail=f"post with id: {id} does not exist")
     post.deleted = True
     db.commit()
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return post
 
 
 @router.put("/{id}", response_model=schemas.CategoryOut)

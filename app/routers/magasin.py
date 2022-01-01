@@ -47,7 +47,7 @@ def get_magasin(id: int, db: Session = Depends(get_db), current_user: int = Depe
     return magasin
 
 
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{id}", response_model_exclude_none=True)
 def delete_magasin(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
 
     magasin_query = db.query(models.Magasin).filter(models.Magasin.id == id,models.Magasin.deleted!=True)
@@ -59,7 +59,7 @@ def delete_magasin(id: int, db: Session = Depends(get_db), current_user: int = D
                             detail=f"magasin with id: {id} does not exist")
     magasin.deleted = True
     db.commit()
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return magasin # Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @router.put("/{id}", response_model=schemas.MagasinOut)

@@ -59,7 +59,7 @@ def get_dette(id: int, db: Session = Depends(get_db), current_user: int = Depend
     return dette
 
 
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{id}", response_model_exclude_none=True)
 def delete_dette(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
 
     dette_query = db.query(models.Dette).filter(models.Dette.id == id,models.Dette.deleted!=True)
@@ -71,7 +71,7 @@ def delete_dette(id: int, db: Session = Depends(get_db), current_user: int = Dep
                             detail=f"dette with id: {id} does not exist")
     dette.deleted = True
     db.commit()
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return dette # Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @router.put("/{id}", response_model=schemas.DetteOut)

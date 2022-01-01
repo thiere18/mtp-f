@@ -60,7 +60,7 @@ def get_depense(id: int, db: Session = Depends(get_db), current_user: int = Depe
     return depense
 
 
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{id}", response_model_exclude_none=True)
 def delete_depot(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
 
     depense_query = db.query(models.Depense).filter(models.Depense.id == id,models.Depense.deleted!=True)
@@ -72,7 +72,7 @@ def delete_depot(id: int, db: Session = Depends(get_db), current_user: int = Dep
                             detail=f"depense with id: {id} does not exist")
     depense.deleted = True
     db.commit()
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return depense #Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @router.put("/{id}", response_model=schemas.DepotOut)

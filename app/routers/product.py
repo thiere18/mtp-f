@@ -64,7 +64,7 @@ def get_product(id: int, db: Session = Depends(get_db), current_user: int = Depe
     return product
 
 
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{id}", response_model_exclude_none=True)
 def delete_product(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
 
     product_query = db.query(models.Product).filter(models.Product.id == id,models.Product.deleted!=True)
@@ -77,7 +77,6 @@ def delete_product(id: int, db: Session = Depends(get_db), current_user: int = D
     product.deleted = True
     db.commit()
     return product
-
 
 @router.put("/{id}", response_model=schemas.ProductOut)
 def update_product(id: int, updated_post: schemas.ProductCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):

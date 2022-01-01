@@ -109,7 +109,7 @@ def update_invoice(id: int, updated_post: schemas.InvoiceUpdate, db: Session = D
 
     return invoice_query.first()
 
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{id}",response_model_exclude_none=True)
 def delete_invoice(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
 
     invoice_query = db.query(models.Invoice).filter(models.Invoice.id == id,models.Invoice.deleted!=True)
@@ -122,7 +122,7 @@ def delete_invoice(id: int, db: Session = Depends(get_db), current_user: int = D
     invoice.deleted = True
   
     db.commit()
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return invoice #Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 
