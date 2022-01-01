@@ -92,19 +92,17 @@ def get_invoice(id: int, db: Session = Depends(get_db), current_user: int = Depe
 
 
 @router.put("/{id}", response_model=schemas.InvoiceOut)
-def update_invoice(id: int, updated_post: schemas.ProductCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
-
-
+def update_invoice(id: int, updated_post: schemas.InvoiceUpdate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
 
     invoice_query = db.query(models.Invoice).filter(models.Invoice.id == id,models.Invoice.deleted!=True)
 
     invoice = invoice_query.first()
 
-    if invoice == None:
+    if invoice is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"invoice with id: {id} does not exist")
 
-    
+
     invoice_query.update(updated_post.dict(), synchronize_session=False)
 
     db.commit()

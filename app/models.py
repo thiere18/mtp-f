@@ -5,10 +5,7 @@ from sqlalchemy.sql.sqltypes import ARRAY, TIMESTAMP, BigInteger
 from .database import Base
 from sqlalchemy.dialects.postgresql import JSON
 
-class Item:
-    designation:str
-    quantity:str
-    product:str
+
 class Container(Base):
     __tablename__ = "containers"
     id = Column(Integer, primary_key=True, nullable=False)
@@ -49,6 +46,7 @@ class Product(Base):
     depot_id= Column(Integer, ForeignKey("depots.id", ondelete="CASCADE"),nullable=False)
     category= relationship("Category", back_populates="products")
     container = relationship("Container", back_populates="products")
+    depot= relationship("Depot", back_populates="products")
 
 
 class Category(Base):
@@ -67,8 +65,7 @@ class Depot(Base):
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
     deleted = Column(Boolean, server_default='False', nullable=False)
-    
-    products=relationship("Product",backref="prodep")
+    products=relationship("Product",back_populates="depot")
 
     pass
 
@@ -82,7 +79,8 @@ class Magasin(Base):
                         nullable=False, server_default=text('now()'))
     deleted = Column(Boolean, server_default='False', nullable=False)
     gerant_id= Column(Integer, ForeignKey("users.id", ondelete="CASCADE"),nullable=False)
-    depenses=relationship("Depense",backref="magasin_depense")
+    depenses=relationship("Depense",back_populates="magasin")
+    invoices=relationship("Invoice",back_populates="magasin")
     pass
 
 class Depense(Base):
@@ -95,6 +93,8 @@ class Depense(Base):
     deleted = Column(Boolean, server_default='False', nullable=False)
     magasin_id=Column(Integer, ForeignKey(
         "magasins.id", ondelete="CASCADE"), nullable=False)
+    magasin=relationship("Magasin", back_populates="depenses")
+    
     pass
 
 class Invoice(Base):
@@ -113,7 +113,8 @@ class Invoice(Base):
         "magasins.id", ondelete="CASCADE"), nullable=False)
     invoice_owner_id = Column(Integer, ForeignKey(
         "users.id", ondelete="CASCADE"), nullable=False)
-    # items=relationship("InvoiceItem",backref="owner")
+    magasin=relationship("Magasin", back_populates="invoices")
+    owner=relationship("User", back_populates="invoices")
     pass
 
 # class InvoiceItem(Base):
@@ -138,7 +139,7 @@ class User(Base):
     password = Column(String, nullable=False)
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
-    invoices=relationship("Invoice",backref="creator")
+    invoices=relationship("Invoice",back_populates="owner")
 
 class Dette(Base):
     __tablename__="dettes"
@@ -154,6 +155,7 @@ class Dette(Base):
     deleted = Column(Boolean, server_default='False', nullable=False)
     dette_owner_id = Column(Integer, ForeignKey(
         "clients.id", ondelete="CASCADE"), nullable=False)
+    owner=relationship("Client", back_populates="dettes")
  
  
 class Client(Base):
@@ -164,4 +166,4 @@ class Client(Base):
      created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
      deleted = Column(Boolean, server_default='False', nullable=False)
-     dettes=relationship("Dette",backref="owner")
+     dettes=relationship("Dette",back_populates="owner")
