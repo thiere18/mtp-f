@@ -22,6 +22,8 @@ class Depensecreate(Depense):
     pass
 class Magasins(BaseModel):
     name: str
+    class Config:
+        orm_mode = True
 class DepenseOut(Depense):
     id: int
     created_at: datetime

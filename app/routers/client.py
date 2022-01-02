@@ -27,8 +27,8 @@ def get_clientss(response: Response,db: Session = Depends(get_db), current_user:
 @router.get("/search", response_model=List[schemas.ClientOut])
 def search_client(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: str = ""):
 
-    clients=db.query(models.Client).filter(models.Client.deleted!=True,models.Client.name.contains(search)).all()
-    return  clients
+    return  db.query(models.Client).filter(models.Client.deleted!=True,models.Client.name.contains(search)).all()
+
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.ClientOut)
 def create_client(post: schemas.DepotCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):

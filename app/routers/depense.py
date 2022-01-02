@@ -38,7 +38,8 @@ def get_depenses(db: Session = Depends(get_db), current_user: int = Depends(oaut
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.DepenseOut)
 def create_depense(post: schemas.Depensecreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
- 
+    #update magasin montant
+
     new_depense = models.Depense(**post.dict())
     db.add(new_depense)
     db.commit()
