@@ -18,7 +18,6 @@ depends_on = None
 
 def upgrade():
     op.add_column('invoices', sa.Column('paid', sa.Boolean(), nullable=False,server_default=sa.text('False')))
-    pass
 
 
 def downgrade():   

@@ -34,4 +34,4 @@ def upgrade():
 
 
 def downgrade():
-    pass
+    op.drop_table('invoices')

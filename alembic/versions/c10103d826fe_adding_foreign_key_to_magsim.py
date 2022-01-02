@@ -34,4 +34,5 @@ def upgrade():
         'magasin_id'],remote_cols=['id'], ondelete="CASCADE")
     
 def downgrade():
-    pass
+    op.drop_table('depenses')
+

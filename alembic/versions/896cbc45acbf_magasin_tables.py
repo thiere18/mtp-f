@@ -27,9 +27,7 @@ def upgrade():
                     sa.PrimaryKeyConstraint('id'),
 
                     )
-    pass
 
 
 def downgrade():
     op.drop_table('magasins')
-    pass

@@ -40,9 +40,7 @@ class Product(Base):
                         nullable=False, server_default=text('now()'))
     deleted = Column(Boolean, server_default='False', nullable=False)
     category_id = Column(Integer, ForeignKey("categories.id", ondelete="CASCADE"), nullable=False)
-    
     container_id = Column(Integer, ForeignKey("containers.id", ondelete="CASCADE"), nullable=False)
-    
     depot_id= Column(Integer, ForeignKey("depots.id", ondelete="CASCADE"),nullable=False)
     category= relationship("Category", back_populates="products")
     container = relationship("Container", back_populates="products")
@@ -139,6 +137,9 @@ class User(Base):
     password = Column(String, nullable=False)
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
+    role_id=Column(Integer, ForeignKey(
+        "roles.id", ondelete="CASCADE"), nullable=False)
+    role=relationship("Role",back_populates="users")
     invoices=relationship("Invoice",back_populates="owner")
 
 class Dette(Base):
@@ -156,8 +157,14 @@ class Dette(Base):
     dette_owner_id = Column(Integer, ForeignKey(
         "clients.id", ondelete="CASCADE"), nullable=False)
     owner=relationship("Client", back_populates="dettes")
- 
- 
+class Role(Base):
+    __tablename__="roles"
+    id = Column(Integer, primary_key=True, nullable=False)
+    name = Column(String(255), nullable=False)     
+    created_at = Column(TIMESTAMP(timezone=True),
+                        nullable=False, server_default=text('now()'))
+    deleted = Column(Boolean, server_default='False', nullable=False)
+    users=relationship('User',back_populates="role")
 class Client(Base):
      __tablename__ = "clients"
      id = Column(Integer, primary_key=True, nullable=False)

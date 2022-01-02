@@ -18,8 +18,6 @@ depends_on = None
 
 def upgrade():
     op.add_column('containers',sa.Column('total',sa.BigInteger(), nullable=False))
-    
-    pass
 
 
 def downgrade():

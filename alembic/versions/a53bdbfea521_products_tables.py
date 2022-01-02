@@ -35,9 +35,7 @@ def upgrade():
                     sa.Column('deleted', sa.Boolean(), nullable=False,server_default=sa.text('False'),),
                     sa.PrimaryKeyConstraint('id'),
                     )
-    pass
 
 
 def downgrade():
     op.drop_table('products')
-    pass
