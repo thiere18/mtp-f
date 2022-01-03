@@ -1,20 +1,17 @@
-from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
+from fastapi import  Response, status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
-from typing import List, Optional
-
-from sqlalchemy import func
-# from sqlalchemy.sql.functions import func
+from typing import List
 from .. import models, schemas, oauth2
 from ..database import get_db
 
 
 router = APIRouter(
-    prefix="/api/v1/depense",
-    tags=['Depense']
+    prefix="/api/v1/depenses",
+    tags=['Depenses']
 )
 
 
-@router.get("/", response_model=List[schemas.DepenseOut])
+@router.get("/", response_model=List[schemas.DepenseOut],response_model_exclude_none=True)
 def get_depenses(response: Response,db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0,):
     depenses =db.query(models.Depense).filter(models.Depense.deleted!=True).all()
     response.headers["Content-Range"] = f"0-9/{len(depenses)}"

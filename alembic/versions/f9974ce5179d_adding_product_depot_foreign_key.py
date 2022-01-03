@@ -24,4 +24,5 @@ def upgrade():
 
 
 def downgrade():
-    pass
+    op.drop_column("products",'depot_id')
+    

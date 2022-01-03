@@ -17,10 +17,10 @@ router = APIRouter(
 @router.get("/", response_model=List[schemas.CategoryOut])
 def get_categories(response:Response,db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
     categories=db.query(models.Category).filter(models.Category.deleted!=True).all()
-    if not categories:
-        raise HTTPException(
-            status_code=status.HTTP_204_NO_CONTENT, detail='No categories'
-        )
+    # if not categories:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_204_NO_CONTENT, detail='No categories'
+    #     )
     response.headers["Content-Range"] = f"0-9/{len(categories)}"
     response.headers['X-Total-Count'] = '30' 
     response.headers['Access-Control-Expose-Headers'] = 'Content-Range'

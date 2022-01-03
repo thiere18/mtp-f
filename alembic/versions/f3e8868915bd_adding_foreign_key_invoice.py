@@ -32,6 +32,8 @@ def upgrade():
 
 
 def downgrade():
-    pass
+    op.drop_column('products','category_id')
+    op.drop_column('products','container_id')
+    op.drop_column('invoices','invoice_owner_id')
 
     

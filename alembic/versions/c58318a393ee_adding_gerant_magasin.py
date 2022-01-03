@@ -24,4 +24,4 @@ def upgrade():
 
 
 def downgrade():
-    pass
+    op.drop_column('magasins','gerant_id')

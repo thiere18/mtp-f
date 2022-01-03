@@ -21,5 +21,5 @@ def upgrade():
 
 
 def downgrade():
+    op.drop_column('users','username')
 
-    pass
