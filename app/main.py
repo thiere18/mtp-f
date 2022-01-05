@@ -15,7 +15,7 @@ app = FastAPI(
     title="MTP API",
     description="MTP API documentation ",
     version="2.0",
-    openapi_url="/api/v1/openapi.json"
+    openapi_url="/api"
     
 )
 
