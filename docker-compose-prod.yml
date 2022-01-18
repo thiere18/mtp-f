@@ -1,7 +1,7 @@
 version: "3"
 services:
   api:
-    image: sloppynetworks/fastapi-app
+    image: thiere18/mtp-api
     ports:
       - 80:8000
     environment:

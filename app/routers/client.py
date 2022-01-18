@@ -31,7 +31,7 @@ def search_client(db: Session = Depends(get_db), current_user: int = Depends(oau
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.ClientOut)
-def create_client(post: schemas.DepotCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+def create_client(post: schemas.ClientCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
  
     new_client = models.Client(**post.dict())
     db.add(new_client)
