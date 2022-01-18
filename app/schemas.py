@@ -374,6 +374,8 @@ class ClientOuts(BaseModel):
     id: int
     name: str
     phone: int
+    class Config:
+        orm_mode= True
 
     
 class DetteOut(Dette):
@@ -383,7 +385,14 @@ class DetteOut(Dette):
     owner:ClientOuts
     class Config:
         orm_mode = True   
-        
+    
+    
+class DetteOuts(Dette):
+    id: int
+    created_at: datetime
+    # dette_owner_id:int
+    class Config:
+        orm_mode = True       
 # client SQLALCHEMY_DATABASE_URL
 
 class Client(BaseModel):
@@ -395,7 +404,7 @@ class ClientCreate(Client):
 
 class ClientOut(Client):
     created_at: datetime
-    dettes:List[DetteOut]
+    dettes:List[DetteOuts]
     class Config:
         orm_mode = True
         

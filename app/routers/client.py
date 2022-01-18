@@ -41,7 +41,7 @@ def create_client(post: schemas.ClientCreate, db: Session = Depends(get_db), cur
     return new_client
 
 
-@router.get("/{id}", response_model=schemas.ClientOut)
+@router.get("/{id}", response_model=schemas.ClientOuts)
 def get_client(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
   
 
