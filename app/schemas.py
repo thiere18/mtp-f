@@ -403,6 +403,7 @@ class ClientCreate(Client):
     pass
 
 class ClientOut(Client):
+    id:int
     created_at: datetime
     dettes:List[DetteOuts]
     class Config:
