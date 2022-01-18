@@ -381,7 +381,7 @@ class ClientOuts(BaseModel):
 class DetteOut(Dette):
     id: int
     created_at: datetime
-    dette_owner_id:int
+    owner_id:int
     owner:ClientOuts
     class Config:
         orm_mode = True   

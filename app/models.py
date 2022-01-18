@@ -154,7 +154,7 @@ class Dette(Base):
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text('now()'))
     deleted = Column(Boolean, server_default='False', nullable=False)
-    dette_owner_id = Column(Integer, ForeignKey(
+    owner_id = Column(Integer, ForeignKey(
         "clients.id", ondelete="CASCADE"), nullable=False)
     owner=relationship("Client", back_populates="dettes")
 class Role(Base):
