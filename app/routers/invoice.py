@@ -138,26 +138,3 @@ def delete_invoice(id: int, db: Session = Depends(get_db), current_user: int = D
     return invoice #Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-
-
-# @router.get("/detail/{id}", response_model=List[schemas.InvoiceItemOut])
-# def get_invoice_detail(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
-  
-# # verify if the container exist
-#     existence= db.query(models.Invoice).filter(models.Invoice.id==id,models.Invoice.deleted!=True).first()
-#     if existence==None:
-#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-#                             detail=f"invoice with id: {id} was not found")
-         
-#     items = db.query(models.InvoiceItem).filter(models.InvoiceItem.invoice_id == id,models.InvoiceItem.deleted!=True).all()
-
-#     if not items:
-#          raise HTTPException(status_code=status.HTTP_200_OK,
-#                             detail=f"this category has no items for now")
-#     return items
-
-
-
-
-# get invoice by client id
-
