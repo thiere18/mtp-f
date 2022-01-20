@@ -55,11 +55,6 @@ async def create_invoice(post: schemas.InvoiceCreate, db: Session = Depends(get_
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST ,detail=f"{prod} is not a product")
         p.quantity_left-=quant
         db.commit()
-        # new_invoice_item = models.InvoiceItem(invoice_id=new_id,**invoice_item.dict())
-        # db.add(new_invoice_item)
-        # db.commit()
-    # await asyncio.sleep(1)
-    # update capital 
     new_invoice = models.Invoice(invoice_owner_id=current_user.id,payment_due=(post.value_net-post.actual_payment), **post.dict())
     db.add(new_invoice)
     db.commit()
