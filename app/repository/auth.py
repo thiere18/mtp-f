@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.utils import get_user_role
 from .. import database, models, utils, oauth2
 
-def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
+def login(db: Session ,user_credentials: OAuth2PasswordRequestForm , ):
 
     user = db.query(models.User).filter((models.User.email == user_credentials.username) | (models.User.username == user_credentials.username)).first()
 
