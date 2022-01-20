@@ -22,7 +22,7 @@ def get_categories(db: Session = Depends(get_db), current_user: int = Depends(oa
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.CategoryOut)
 def create_categories(post: schemas.CategoryCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
-    return category.create_categories()
+    return category.create_categories(post, db, current_user)
 
 @router.get("/{id}", response_model=schemas.CategoryOut)
 def get_category(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
