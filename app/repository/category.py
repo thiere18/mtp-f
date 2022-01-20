@@ -1,11 +1,10 @@
-from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
+from fastapi import  Response, status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
-from typing import List, Optional
+# from typing import 
 
 from sqlalchemy import func
 # from sqlalchemy.sql.functions import func
-from .. import models, schemas, oauth2
-from ..database import get_db
+from .. import models, schemas
 
 
 router = APIRouter(
