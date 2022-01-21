@@ -42,7 +42,7 @@ def get_depense(id: int, db: Session ):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"depense with id: {id} was not found")
     return depense
-def delete_depense(id: int, db: Session = Depends(get_db)):
+def delete_depense(id: int, db: Session ):
     depense_query = db.query(models.Depense).filter(models.Depense.id == id,models.Depense.deleted!=True)
     depense = depense_query.first()
     if depense is None:
@@ -52,7 +52,7 @@ def delete_depense(id: int, db: Session = Depends(get_db)):
     db.commit()
     return depense #Response(status_code=status.HTTP_204_NO_CONTENT)
 
-def update_depense(id: int, updated_post: schemas.CategoryCreate, db: Session = Depends(get_db)):
+def update_depense(id: int, updated_post: schemas.CategoryCreate, db: Session ):
     depense_query = db.query(models.Depense).filter(models.Depense.id == id,models.Depense.deleted!=True)
     depense = depense_query.first()
     if depense is None:

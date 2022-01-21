@@ -14,14 +14,14 @@ router = APIRouter(
 )
 
 
-def get_depots(response: Response,db: Session = Depends(get_db)):
+def get_depots(response: Response,db: Session ):
     depots=db.query(models.Depot).filter(models.Depot.deleted!=True).all()
     response.headers["Content-Range"] = f"0-9/{len(depots)}"
     response.headers['X-Total-Count'] = '30' 
     response.headers['Access-Control-Expose-Headers'] = 'Content-Range'
     return  depots
 
-def get_depots(db: Session = Depends(get_db),search: str = ""):
+def get_depots(db: Session ,search: str = ""):
     return (
         db.query(models.Depot)
         .filter(
@@ -30,7 +30,7 @@ def get_depots(db: Session = Depends(get_db),search: str = ""):
         .all()
     )
 
-def create_depot(post: schemas.DepotCreate, db: Session = Depends(get_db)):
+def create_depot(post: schemas.DepotCreate, db: Session ):
     new_depot = models.Depot(**post.dict())
     db.add(new_depot)
     db.commit()
@@ -38,14 +38,14 @@ def create_depot(post: schemas.DepotCreate, db: Session = Depends(get_db)):
     return new_depot
 
 
-def get_depot(id: int, db: Session = Depends(get_db)):
+def get_depot(id: int, db: Session ):
     depot = db.query(models.Depot).filter(models.Depot.id == id,models.Depot.deleted!=True).first()
     if not depot:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"depot with id: {id} was not found")
     return depot
 
-def delete_depot(id: int, db: Session = Depends(get_db)):
+def delete_depot(id: int, db: Session ):
     depot_query = db.query(models.Depot).filter(models.Depot.id == id,models.Depot.deleted!=True)
     depot = depot_query.first()
     if depot is None:
@@ -56,7 +56,7 @@ def delete_depot(id: int, db: Session = Depends(get_db)):
     return depot #Response(status_code=status.HTTP_204_NO_CONTENT)
 
 @router.put("/{id}", response_model=schemas.DepotOut)
-def update_depot(id: int, updated_post: schemas.CategoryCreate, db: Session = Depends(get_db)):
+def update_depot(id: int, updated_post: schemas.CategoryCreate, db: Session ):
     depot_query = db.query(models.Depot).filter(models.Depot.id == id,models.Depot.deleted!=True)
     depot = depot_query.first()
     if depot is None:
