@@ -31,4 +31,4 @@ def login( db: Session = Depends(database.get_db), user_credentials: OAuth2Passw
 #     access_token = oauth2.create_access_token(data={"user_id": user.id,"permissions":permissions})
 
 #     return {"access_token": access_token, "token_type": "bearer", "permission":permissions}
-    return auth.login()
+    return auth.login(db,user_credentials)
