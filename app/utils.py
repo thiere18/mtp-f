@@ -51,4 +51,3 @@ def get_user_role(role_id:int, db: Session = Depends(database.get_db)):
     return role.name
 
     
-    
