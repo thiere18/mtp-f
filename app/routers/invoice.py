@@ -45,12 +45,15 @@ def get_invoices(db: Session = Depends(get_db), current_user: int = Depends(oaut
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.InvoiceOut)
 async def create_invoice(post: schemas.InvoiceCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
-
+    total=0
     for invoice_item in post.items:
-        prod=invoice_item.product_name
+        prod=invoice_item.designation
         quant=invoice_item.quantity
+
         #verify if this product exist
         p= db.query(models.Product).filter(models.Product.designation==prod).first()
+        p.prix_en_gros
+        total+=p.prix_en_gros
         if not p:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST ,detail=f"{prod} is not a product")
         p.quantity_left-=quant
@@ -87,6 +90,7 @@ async def create_invoice(post: schemas.InvoiceCreate, db: Session = Depends(get_
     #     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Problem")
     # up.montant+=sub
     # db.commit()
+    print(total)
     return new_invoice
 
 

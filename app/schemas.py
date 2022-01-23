@@ -51,6 +51,11 @@ class Magasin(BaseModel):
 
 class MagasinCreate(Magasin):
     pass
+class Items(BaseModel):
+    designation: str
+    quantity:int
+    class Config:
+        orm_mode = True
 class InvoiceOutMagasin(BaseModel):
     id:int
     reference:str
@@ -60,7 +65,7 @@ class InvoiceOutMagasin(BaseModel):
     invoice_owner_id:int
     paid:bool
     created_at: datetime
-    items:List[Dict]
+    items:List[Items]
     class Config:
         orm_mode = True
  
@@ -211,7 +216,7 @@ class InvoiceOutUser(BaseModel):
     invoice_owner_id:int
     paid:bool
     created_at: datetime
-    items:List[Dict]
+    items:List[Items]
     class Config:
         orm_mode = True
 class UserOutForRole(BaseModel):
@@ -306,7 +311,7 @@ class Invoice(BaseModel):
     value_net: int
     actual_payment: int
     magasin_id:int
-    items:List[Dict]
+    items:List[Items]
     pass
 
 class InvoiceCreate(Invoice):
@@ -326,7 +331,7 @@ class InvoiceOut(BaseModel):
     invoice_owner_id:int
     paid:bool
     created_at: datetime
-    items:List[Dict]
+    items:List[Items]
     magasin:MagasinOutDepense
     owner:UserBasic
     class Config:
@@ -334,7 +339,7 @@ class InvoiceOut(BaseModel):
 
     pass
 class InvoiceDetails(InvoiceOut):
-    items:List[Dict]
+    items:List[Items]
     
     
 class InvDet(BaseModel):
