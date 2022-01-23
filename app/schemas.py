@@ -54,6 +54,7 @@ class MagasinCreate(Magasin):
 class Items(BaseModel):
     designation: str
     quantity:int
+    prix_unit: Optional[int] =0
     class Config:
         orm_mode = True
 class InvoiceOutMagasin(BaseModel):
@@ -308,7 +309,6 @@ class ContainerOut(BaseModel):
     
 class Invoice(BaseModel):
     reference:str
-    value_net: int
     actual_payment: int
     magasin_id:int
     items:List[Items]

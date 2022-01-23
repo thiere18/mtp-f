@@ -47,18 +47,20 @@ def get_invoices(db: Session = Depends(get_db), current_user: int = Depends(oaut
 async def create_invoice(post: schemas.InvoiceCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
     total=0
     for invoice_item in post.items:
-        prod=invoice_item.designation
-        quant=invoice_item.quantity
-
+        product=invoice_item.designation
+        quantity=invoice_item.quantity
+        
         #verify if this product exist
-        p= db.query(models.Product).filter(models.Product.designation==prod).first()
+        p= db.query(models.Product).filter(models.Product.designation==product).first()
         p.prix_en_gros
-        total+=p.prix_en_gros
+        invoice_item.prix_unit=p.prix_en_gros
+        total+=invoice_item.prix_unit*quantity
+        
         if not p:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST ,detail=f"{prod} is not a product")
-        p.quantity_left-=quant
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST ,detail=f"{product} is not a product")
+        p.quantity_left-=quantity
         db.commit()
-    new_invoice = models.Invoice(invoice_owner_id=current_user.id,payment_due=(post.value_net-post.actual_payment), **post.dict())
+    new_invoice = models.Invoice(invoice_owner_id=current_user.id,value_net=total,payment_due=(total-post.actual_payment), **post.dict())
     db.add(new_invoice)
     db.commit()
     db.refresh(new_invoice)
