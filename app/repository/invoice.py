@@ -1,14 +1,12 @@
-from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
+from fastapi import Response, status, HTTPException, Depends
 from sqlalchemy.orm import Session
-from typing import List, Optional
-from .. import utils
+from typing import Optional
 import asyncio
-from sqlalchemy import func
 # from sqlalchemy.sql.functions import func
 from .. import models, schemas, oauth2
 from ..database import get_db
 
-def get_invoices(response: Response,db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: Optional[str] = ""):
+def get_invoices(response: Response,db: Session, ):
 
     invoices=db.query(models.Invoice).filter(models.Invoice.deleted!=True).all()
     response.headers["Content-Range"] = f"0-9/{len(invoices)}"
@@ -17,7 +15,7 @@ def get_invoices(response: Response,db: Session = Depends(get_db), current_user:
 
     return  invoices
 
-def get_invoices(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: Optional[str] = ""):
+def get_invoices(db: Session, search: Optional[str] = ""):
 
     return (
         db.query(models.Invoice)
@@ -29,8 +27,7 @@ def get_invoices(db: Session = Depends(get_db), current_user: int = Depends(oaut
     )
 
 
-async def create_invoice(post: schemas.InvoiceCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
-
+async def create_invoice(post: schemas.InvoiceCreate, db: Session, current_user: int = Depends(oauth2.get_current_user)):
     for invoice_item in post.items:
         prod=invoice_item.product_name
         quant=invoice_item.quantity
@@ -53,9 +50,7 @@ async def create_invoice(post: schemas.InvoiceCreate, db: Session = Depends(get_
     await asyncio.sleep(1)
     return new_invoice
 
-
-
-def get_invoice(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+def get_invoice(id: int, db: Session):
 
     invoice = db.query(models.Invoice).filter(models.Invoice.id == id,models.Invoice.deleted!=True).first()
 
@@ -66,7 +61,7 @@ def get_invoice(id: int, db: Session = Depends(get_db), current_user: int = Depe
     return invoice
 
 
-def update_invoice(id: int, updated_post: schemas.InvoiceUpdate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+def update_invoice(id: int, updated_post: schemas.InvoiceUpdate, db: Session):
 
     invoice_query = db.query(models.Invoice).filter(models.Invoice.id == id,models.Invoice.deleted!=True)
 
@@ -83,7 +78,7 @@ def update_invoice(id: int, updated_post: schemas.InvoiceUpdate, db: Session = D
 
     return invoice_query.first()
 
-def delete_invoice(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+def delete_invoice(id: int, db: Session):
 
     invoice_query = db.query(models.Invoice).filter(models.Invoice.id == id,models.Invoice.deleted!=True)
 
