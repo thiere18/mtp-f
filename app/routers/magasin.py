@@ -2,9 +2,8 @@ from fastapi import  Response, status, Depends, APIRouter
 from sqlalchemy.orm import Session
 from typing import List
 from app.repository import magasin
-from .. import models, schemas, oauth2
+from .. import schemas, oauth2
 from ..database import get_db
-
 
 router = APIRouter(
     prefix="/api/v1/magasins",
