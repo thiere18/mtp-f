@@ -47,7 +47,7 @@ def get_invoices(db: Session = Depends(get_db), current_user: int = Depends(oaut
 async def create_invoice(post: schemas.InvoiceCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
 
     for invoice_item in post.items:
-        prod=invoice_item.product_name
+        prod=invoice_item.designation
         quant=invoice_item.quantity
         #verify if this product exist
         p= db.query(models.Product).filter(models.Product.designation==prod).first()
