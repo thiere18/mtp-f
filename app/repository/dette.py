@@ -7,10 +7,7 @@ from sqlalchemy import func
 from .. import models, schemas, oauth2
 from ..database import get_db
 
-router = APIRouter(
-    prefix="/api/v1/dettes",
-    tags=['Dettes']
-)
+
 
 
 def get_dettes(response: Response,db: Session ):
@@ -20,7 +17,6 @@ def get_dettes(response: Response,db: Session ):
     response.headers['Access-Control-Expose-Headers'] = 'Content-Range'
     return  dettes
 
-@router.get("/search", response_model=List[schemas.DetteOut])
 def search_dette_by_reference(db: Session , search: str ):
     return (
         db.query(models.Dette)
@@ -31,7 +27,6 @@ def search_dette_by_reference(db: Session , search: str ):
         .all()
     )
 
-@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.DetteOut)
 def create_dette(post: schemas.DetteCreate, db: Session):
  
     new_dette = models.Dette(**post.dict())

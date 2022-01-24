@@ -1,7 +1,7 @@
 from fastapi import Response, status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 from typing import List
-from app.repository import depot
+from app.repository import  depot
 from sqlalchemy import func
 # from sqlalchemy.sql.functions import func
 from .. import models, schemas, oauth2
@@ -35,5 +35,5 @@ def delete_depot(id: int, db: Session = Depends(get_db), current_user: int = Dep
     return depot.delete_depot(id, db)
 
 @router.put("/{id}", response_model=schemas.DepotOut)
-def update_depot(id: int, updated_post: schemas.CategoryCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+def update_depot(id: int, updated_post: schemas.DepotCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
     return depot.update_depot(id,updated_post, db)

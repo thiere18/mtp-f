@@ -8,12 +8,6 @@ from .. import models, schemas, oauth2
 from ..database import get_db
 
 
-router = APIRouter(
-    prefix="/api/v1/depots",
-    tags=['Depots']
-)
-
-
 def get_depots(response: Response,db: Session ):
     depots=db.query(models.Depot).filter(models.Depot.deleted!=True).all()
     response.headers["Content-Range"] = f"0-9/{len(depots)}"
@@ -55,8 +49,7 @@ def delete_depot(id: int, db: Session ):
     db.commit()
     return depot #Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@router.put("/{id}", response_model=schemas.DepotOut)
-def update_depot(id: int, updated_post: schemas.CategoryCreate, db: Session ):
+def update_depot(id: int, updated_post: schemas.DepotCreate, db: Session ):
     depot_query = db.query(models.Depot).filter(models.Depot.id == id,models.Depot.deleted!=True)
     depot = depot_query.first()
     if depot is None:
