@@ -23,7 +23,7 @@ def get_invoices(db: Session = Depends(get_db), current_user: int = Depends(oaut
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.InvoiceOut)
 async def create_invoice(post: schemas.InvoiceCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
     return invoice.create_invoice(post, db)
-
+  
 @router.get("/{id}", response_model=schemas.InvoiceOut)
 def get_invoice(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
     return invoice.get_invoice(id, db)
