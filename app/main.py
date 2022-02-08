@@ -3,7 +3,21 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from . import models
 from .database import engine
-from .routers import user, auth,category,product,depot,magasin,container,inventory,invoice,depense,dette,client,role
+from .routers import (
+    user,
+    auth,
+    category,
+    product,
+    depot,
+    magasin,
+    container,
+    inventory,
+    invoice,
+    depense,
+    dette,
+    client,
+    role,
+)
 from .config import settings
 
 
@@ -15,8 +29,7 @@ app = FastAPI(
     title="MTP API",
     description="MTP API documentation ",
     version="2.0",
-    openapi_url="/api"
-    
+    openapi_url="/api",
 )
 
 origins = ["*"]
@@ -43,10 +56,11 @@ app.include_router(invoice.router)
 app.include_router(depense.router)
 app.include_router(dette.router)
 
+
 @app.get("/")
 def root():
-    return {"message": "Hello World",
-            "openapiapi documentation url":"/api/v1/docs",
-            "redoc documentationurl ": "/api/v1/redoc"
-            
-            }
+    return {
+        "message": "Hello World",
+        "openapiapi documentation url": "/api/v1/docs",
+        "redoc documentationurl ": "/api/v1/redoc",
+    }

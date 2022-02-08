@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey,Date
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Date
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.expression import text
 from sqlalchemy.sql.sqltypes import ARRAY, TIMESTAMP, BigInteger
@@ -17,53 +17,65 @@ class Container(Base):
     dechargement = Column(BigInteger(), nullable=False)
     frais_voyage = Column(BigInteger(), nullable=False)
     total = Column(BigInteger(), nullable=False)
-    created_at = Column(TIMESTAMP(timezone=True),
-                        nullable=False, server_default=text('now()'))
-    deleted = Column(Boolean, server_default='False', nullable=False)
+    created_at = Column(
+        TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
+    )
+    deleted = Column(Boolean, server_default="False", nullable=False)
     products = relationship("Product", back_populates="container")
     pass
 
+
 class Product(Base):
     __tablename__ = "products"
-    id= Column(Integer, primary_key=True, nullable=False)
+    id = Column(Integer, primary_key=True, nullable=False)
     reference = Column(String, nullable=False)
     designation = Column(String, nullable=False)
-    prix_achat= Column(BigInteger(), nullable=False)
-    frais= Column(BigInteger(), nullable=False)
+    prix_achat = Column(BigInteger(), nullable=False)
+    frais = Column(BigInteger(), nullable=False)
     prix_revient = Column(BigInteger(), nullable=False)
     prix_en_gros = Column(BigInteger(), nullable=False)
     prix_magasin = Column(BigInteger(), nullable=False)
     quantity_per_carton = Column(Integer(), nullable=False)
-    quantity_init= Column(Integer(), nullable=True)
-    quantity_left= Column(Integer(), nullable=True)
-    created_at = Column(TIMESTAMP(timezone=True),
-                        nullable=False, server_default=text('now()'))
-    deleted = Column(Boolean, server_default='False', nullable=False)
-    category_id = Column(Integer, ForeignKey("categories.id", ondelete="CASCADE"), nullable=False)
-    container_id = Column(Integer, ForeignKey("containers.id", ondelete="CASCADE"), nullable=False)
-    depot_id= Column(Integer, ForeignKey("depots.id", ondelete="CASCADE"),nullable=False)
-    category= relationship("Category", back_populates="products")
+    quantity_init = Column(Integer(), nullable=True)
+    quantity_left = Column(Integer(), nullable=True)
+    created_at = Column(
+        TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
+    )
+    deleted = Column(Boolean, server_default="False", nullable=False)
+    category_id = Column(
+        Integer, ForeignKey("categories.id", ondelete="CASCADE"), nullable=False
+    )
+    container_id = Column(
+        Integer, ForeignKey("containers.id", ondelete="CASCADE"), nullable=False
+    )
+    depot_id = Column(
+        Integer, ForeignKey("depots.id", ondelete="CASCADE"), nullable=False
+    )
+    category = relationship("Category", back_populates="products")
     container = relationship("Container", back_populates="products")
-    depot= relationship("Depot", back_populates="products")
+    depot = relationship("Depot", back_populates="products")
 
 
 class Category(Base):
     __tablename__ = "categories"
     id = Column(Integer, primary_key=True, nullable=False)
     name = Column(String(255), nullable=False)
-    created_at = Column(TIMESTAMP(timezone=True),
-                        nullable=False, server_default=text('now()'))
-    deleted = Column(Boolean, server_default='False', nullable=False)
-    products= relationship("Product", back_populates="category")
+    created_at = Column(
+        TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
+    )
+    deleted = Column(Boolean, server_default="False", nullable=False)
+    products = relationship("Product", back_populates="category")
+
 
 class Depot(Base):
     __tablename__ = "depots"
     id = Column(Integer, primary_key=True, nullable=False)
     name = Column(String(255), nullable=False)
-    created_at = Column(TIMESTAMP(timezone=True),
-                        nullable=False, server_default=text('now()'))
-    deleted = Column(Boolean, server_default='False', nullable=False)
-    products=relationship("Product",back_populates="depot")
+    created_at = Column(
+        TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
+    )
+    deleted = Column(Boolean, server_default="False", nullable=False)
+    products = relationship("Product", back_populates="depot")
 
     pass
 
@@ -73,47 +85,58 @@ class Magasin(Base):
     id = Column(Integer, primary_key=True, nullable=False)
     name = Column(String(255), nullable=False)
     montant = Column(BigInteger(), nullable=False)
-    created_at = Column(TIMESTAMP(timezone=True),
-                        nullable=False, server_default=text('now()'))
-    deleted = Column(Boolean, server_default='False', nullable=False)
-    gerant_id= Column(Integer, ForeignKey("users.id", ondelete="CASCADE"),nullable=False)
-    depenses=relationship("Depense",back_populates="magasin")
-    invoices=relationship("Invoice",back_populates="magasin")
+    created_at = Column(
+        TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
+    )
+    deleted = Column(Boolean, server_default="False", nullable=False)
+    gerant_id = Column(
+        Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+    )
+    depenses = relationship("Depense", back_populates="magasin")
+    invoices = relationship("Invoice", back_populates="magasin")
     pass
+
 
 class Depense(Base):
     __tablename__ = "depenses"
     id = Column(Integer, primary_key=True, nullable=False)
     motif = Column(String(255), nullable=False)
     montant = Column(BigInteger(), nullable=False)
-    created_at = Column(TIMESTAMP(timezone=True),
-                        nullable=False, server_default=text('now()'))
-    deleted = Column(Boolean, server_default='False', nullable=False)
-    magasin_id=Column(Integer, ForeignKey(
-        "magasins.id", ondelete="CASCADE"), nullable=False)
-    magasin=relationship("Magasin", back_populates="depenses")
-    
+    created_at = Column(
+        TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
+    )
+    deleted = Column(Boolean, server_default="False", nullable=False)
+    magasin_id = Column(
+        Integer, ForeignKey("magasins.id", ondelete="CASCADE"), nullable=False
+    )
+    magasin = relationship("Magasin", back_populates="depenses")
+
     pass
+
 
 class Invoice(Base):
     __tablename__ = "invoices"
     id = Column(Integer, primary_key=True, nullable=False)
     reference = Column(String(255), nullable=False)
-    value_net= Column(BigInteger(), nullable=False)
+    value_net = Column(BigInteger(), nullable=False)
     actual_payment = Column(BigInteger(), nullable=False)
     payment_due = Column(BigInteger(), nullable=False)
-    created_at = Column(TIMESTAMP(timezone=True),
-                        nullable=False, server_default=text('now()'))
-    paid = Column(Boolean, server_default='False', nullable=False)
-    items= Column(ARRAY(JSON))
-    deleted = Column(Boolean, server_default='False', nullable=False)
-    magasin_id= Column(Integer, ForeignKey(
-        "magasins.id", ondelete="CASCADE"), nullable=False)
-    invoice_owner_id = Column(Integer, ForeignKey(
-        "users.id", ondelete="CASCADE"), nullable=False)
-    magasin=relationship("Magasin", back_populates="invoices")
-    owner=relationship("User", back_populates="invoices")
+    created_at = Column(
+        TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
+    )
+    paid = Column(Boolean, server_default="False", nullable=False)
+    items = Column(ARRAY(JSON))
+    deleted = Column(Boolean, server_default="False", nullable=False)
+    magasin_id = Column(
+        Integer, ForeignKey("magasins.id", ondelete="CASCADE"), nullable=False
+    )
+    invoice_owner_id = Column(
+        Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+    )
+    magasin = relationship("Magasin", back_populates="invoices")
+    owner = relationship("User", back_populates="invoices")
     pass
+
 
 # class InvoiceItem(Base):
 #     __tablename__ = "invoiceitems"
@@ -126,7 +149,6 @@ class Invoice(Base):
 #     deleted = Column(Boolean, server_default='False', nullable=False)
 #     invoice_id = Column(Integer, ForeignKey(
 #         "invoices.id", ondelete="CASCADE"), nullable=False)
-    
 
 
 class User(Base):
@@ -135,15 +157,18 @@ class User(Base):
     username = Column(String(255), nullable=False)
     email = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False)
-    created_at = Column(TIMESTAMP(timezone=True),
-                        nullable=False, server_default=text('now()'))
-    role_id=Column(Integer, ForeignKey(
-        "roles.id", ondelete="CASCADE"), nullable=False)
-    role=relationship("Role",back_populates="users")
-    invoices=relationship("Invoice",back_populates="owner")
+    created_at = Column(
+        TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
+    )
+    role_id = Column(
+        Integer, ForeignKey("roles.id", ondelete="CASCADE"), nullable=False
+    )
+    role = relationship("Role", back_populates="users")
+    invoices = relationship("Invoice", back_populates="owner")
+
 
 class Dette(Base):
-    __tablename__="dettes"
+    __tablename__ = "dettes"
     id = Column(Integer, primary_key=True, nullable=False)
     reference = Column(String(255), nullable=False)
     total_amount = Column(BigInteger(), nullable=False)
@@ -151,26 +176,34 @@ class Dette(Base):
     payment_due = Column(BigInteger(), nullable=False)
     start_date = Column(Date(), nullable=False)
     end_date = Column(Date(), nullable=False)
-    created_at = Column(TIMESTAMP(timezone=True),
-                        nullable=False, server_default=text('now()'))
-    deleted = Column(Boolean, server_default='False', nullable=False)
-    owner_id = Column(Integer, ForeignKey(
-        "clients.id", ondelete="CASCADE"), nullable=False)
-    owner=relationship("Client", back_populates="dettes")
+    created_at = Column(
+        TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
+    )
+    deleted = Column(Boolean, server_default="False", nullable=False)
+    owner_id = Column(
+        Integer, ForeignKey("clients.id", ondelete="CASCADE"), nullable=False
+    )
+    owner = relationship("Client", back_populates="dettes")
+
+
 class Role(Base):
-    __tablename__="roles"
+    __tablename__ = "roles"
     id = Column(Integer, primary_key=True, nullable=False)
-    name = Column(String(255), nullable=False)     
-    created_at = Column(TIMESTAMP(timezone=True),
-                        nullable=False, server_default=text('now()'))
-    deleted = Column(Boolean, server_default='False', nullable=False)
-    users=relationship('User',back_populates="role")
+    name = Column(String(255), nullable=False)
+    created_at = Column(
+        TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
+    )
+    deleted = Column(Boolean, server_default="False", nullable=False)
+    users = relationship("User", back_populates="role")
+
+
 class Client(Base):
-     __tablename__ = "clients"
-     id = Column(Integer, primary_key=True, nullable=False)
-     name = Column(String(255), nullable=False)
-     phone = Column(String(255), nullable=False)
-     created_at = Column(TIMESTAMP(timezone=True),
-                        nullable=False, server_default=text('now()'))
-     deleted = Column(Boolean, server_default='False', nullable=False)
-     dettes=relationship("Dette",back_populates="owner")
+    __tablename__ = "clients"
+    id = Column(Integer, primary_key=True, nullable=False)
+    name = Column(String(255), nullable=False)
+    phone = Column(String(255), nullable=False)
+    created_at = Column(
+        TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")
+    )
+    deleted = Column(Boolean, server_default="False", nullable=False)
+    dettes = relationship("Dette", back_populates="owner")

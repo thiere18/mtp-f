@@ -10,24 +10,33 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '896cbc45acbf'
-down_revision = 'a53bdbfea521'
+revision = "896cbc45acbf"
+down_revision = "a53bdbfea521"
 branch_labels = None
 depends_on = None
 
 
 def upgrade():
-    op.create_table('magasins', 
-                    sa.Column('id', sa.Integer(), nullable=False),
-                    sa.Column('name', sa.String(), nullable=False),
-                    sa.Column('montant', sa.BigInteger(), nullable=False),
-                    sa.Column('created_at', sa.TIMESTAMP(timezone=True),
-                              server_default=sa.text('now()'), nullable=False),
-                    sa.Column('deleted', sa.Boolean(), nullable=False,server_default=sa.text('False'),),
-                    sa.PrimaryKeyConstraint('id'),
-
-                    )
+    op.create_table(
+        "magasins",
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("name", sa.String(), nullable=False),
+        sa.Column("montant", sa.BigInteger(), nullable=False),
+        sa.Column(
+            "created_at",
+            sa.TIMESTAMP(timezone=True),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
+        sa.Column(
+            "deleted",
+            sa.Boolean(),
+            nullable=False,
+            server_default=sa.text("False"),
+        ),
+        sa.PrimaryKeyConstraint("id"),
+    )
 
 
 def downgrade():
-    op.drop_table('magasins')
+    op.drop_table("magasins")
