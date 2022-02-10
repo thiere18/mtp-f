@@ -1,12 +1,6 @@
-FROM python:3.8
+FROM python:3.9
 
-RUN apt update -y \
-    && apt install nginx curl vim -y \
-    && apt-get install software-properties-common -y \
-    && add-apt-repository -r ppa:certbot/certbot -y \
-    && apt-get update -y \
-    && apt-get install python3-certbot-nginx -y \
-    && apt-get clean
+RUN curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose RUN chmod +x /usr/local/bin/docker-compose
 
 WORKDIR /usr/src/app
 COPY requirements.txt ./
