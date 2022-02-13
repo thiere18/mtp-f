@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends, status, HTTPException, Response
+from fastapi import status, HTTPException
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from app.utils import get_user_role
-from .. import database, models, utils, oauth2
+from .. import models, utils, oauth2
 
 
 def login(
@@ -21,7 +21,7 @@ def login(
 
     if not user:
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, detail=f"Invalid Credentials"
+            status_code=status.HTTP_403_FORBIDDEN, detail="Invalid Credentials"
         )
 
     if not utils.verify(user_credentials.password, user.password):

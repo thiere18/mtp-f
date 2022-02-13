@@ -8,9 +8,8 @@ from app.database import Base, get_db
 from app.main import app
 import pytest
 from app.oauth2 import create_access_token
-import json
-
-SQLALCHEMY_DATABASE_URL = f"postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}_test"
+host_test = 'postgres_test'
+SQLALCHEMY_DATABASE_URL = f"postgresql://{settings.database_username}:{settings.database_password}@{host_test}:5431/{settings.database_name}_test"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 

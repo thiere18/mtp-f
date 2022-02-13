@@ -15,4 +15,4 @@ sleep 5;
 docker-compose run --rm backend alembic upgrade head
 
 # Create initial data
-# docker-compose run --rm backend python3 -m app.initial_data
+docker-compose run --rm backend python3 -m app.initial_data

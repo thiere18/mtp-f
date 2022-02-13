@@ -50,8 +50,6 @@ def upgrade():
         ondelete="CASCADE",
     )
 
-    pass
-
 
 def downgrade():
     pass

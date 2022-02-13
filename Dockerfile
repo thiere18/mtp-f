@@ -1,15 +1,16 @@
-FROM python:3.9
+FROM python:3.9.7
 
-RUN curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose RUN chmod +x /usr/local/bin/docker-compose
+ENV HOME /app
+WORKDIR /app
 
-WORKDIR /usr/src/app
-COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+ENV PYTHONPATH=${PYTHONPATH}:${PWD}
+RUN pip install poetry==1.1.12
+RUN poetry config virtualenvs.create false
+COPY pyproject.toml poetry.lock /app/
+RUN poetry install
+
 COPY . .
 
 
-EXPOSE 80
-
-STOPSIGNAL SIGTERM
-
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 8000
+CMD [ "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

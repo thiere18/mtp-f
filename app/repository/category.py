@@ -1,11 +1,6 @@
-from fastapi import Response, status, HTTPException, Depends, APIRouter
+from fastapi import Response, status, HTTPException, APIRouter
 from sqlalchemy.orm import Session
 
-# from typing import
-
-from sqlalchemy import func
-
-# from sqlalchemy.sql.functions import func
 from .. import models, schemas
 
 
@@ -13,7 +8,7 @@ router = APIRouter(prefix="/api/v1/categories", tags=["Categories"])
 
 
 def get_categories(response: Response, db: Session, current_user: int):
-    categories = db.query(models.Category).filter(models.Category.deleted != True).all()
+    categories = db.query(models.Category).filter(models.Category.deleted is not True).all()
     response.headers["Content-Range"] = f"0-9/{len(categories)}"
     response.headers["X-Total-Count"] = "30"
     response.headers["Access-Control-Expose-Headers"] = "Content-Range"
@@ -23,7 +18,7 @@ def get_categories(response: Response, db: Session, current_user: int):
 def get_categories_search(db: Session, current_user: int, search: str):
     categories = (
         db.query(models.Category)
-        .filter(models.Category.deleted != True, models.Category.name.contains(search))
+        .filter(models.Category.deleted is not True, models.Category.name.contains(search))
         .all()
     )
     if not categories:
@@ -46,7 +41,7 @@ def create_categories(post: schemas.CategoryCreate, db: Session, current_user: i
 def get_category(id: int, db: Session, current_user: int):
     category = (
         db.query(models.Category)
-        .filter(models.Category.id == id, models.Category.deleted != True)
+        .filter(models.Category.id == id, models.Category.deleted is not True)
         .first()
     )
     if not category:
@@ -59,7 +54,7 @@ def get_category(id: int, db: Session, current_user: int):
 
 def delete_post(id: int, db: Session, current_user: int):
     post_query = db.query(models.Category).filter(
-        models.Category.id == id, models.Category.deleted != True
+        models.Category.id == id, models.Category.deleted is not True
     )
     post = post_query.first()
     if post is None:
@@ -76,7 +71,7 @@ def update_post(
     id: int, updated_post: schemas.CategoryCreate, db: Session, current_user: int
 ):
     post_query = db.query(models.Category).filter(
-        models.Category.id == id, models.Category.deleted != True
+        models.Category.id == id, models.Category.deleted is not True
     )
     post = post_query.first()
     if post is None:

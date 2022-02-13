@@ -67,7 +67,6 @@ def test_correct_incorrect_user_reset(
     data = {"actual_password": actual_password, "new_password": new_password}
     res = authorized_client.put(f"{base_api}/users/edit", json=data)
     assert res.status_code == status_code
-    pass
 
 
 def test_unauthenticated_user_reset(client):
