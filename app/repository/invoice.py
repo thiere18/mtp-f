@@ -65,7 +65,7 @@ async def create_invoice(
         .first()
     )
     if not up:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Problem")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Probleme")
     up.montant += sub
     db.commit()
     await asyncio.sleep(1)
