@@ -1,2 +1,2 @@
-# mtp-f
+# mtp
 mtp-first api with fastapi
